@@ -99,9 +99,19 @@ h6 {
   --warning-border: rgba(217, 119, 6, 0.3);
 
   /* Error colors */
-  --error-color: #ef4444;
-  --error-bg: rgba(239, 68, 68, 0.1);
-  --error-border: rgba(239, 68, 68, 0.3);
+  --error-color: #dc2626;
+  --error-bg: rgba(220, 38, 38, 0.1);
+  --error-border: rgba(220, 38, 38, 0.3);
+
+  /* Earth tone colors */
+  --earth-brown: #92400e;
+  --earth-amber: #d97706;
+  --earth-yellow: #ca8a04;
+  --earth-lime: #65a30d;
+  --earth-green: #059669;
+  --earth-emerald: #047857;
+  --earth-teal: #0f766e;
+  --earth-slate: #475569;
 
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #059669 0%, #16a34a 100%);
@@ -190,7 +200,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  background: var(--accent-primary);
 }
 
 /* Firefox scrollbar */
@@ -212,7 +222,7 @@ html {
 /* Selection styling */
 ::selection {
   background-color: var(--accent-light);
-  color: var(--accent-primary);
+  color: var(--earth-green);
 }
 
 /* Utility classes */
