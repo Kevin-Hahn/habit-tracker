@@ -116,7 +116,7 @@ import { Habit, HabitEntry } from "../../models/habit.model";
 
       <!-- Habits List -->
       <main class="habits-main">
-        @if (activeHabits().length === 0) {
+        @if (habitService.activeHabits().length === 0) {
           <div class="empty-state">
             <div class="empty-icon">🎯</div>
             <h2 class="empty-title">No habits yet</h2>
@@ -139,7 +139,7 @@ import { Habit, HabitEntry } from "../../models/habit.model";
           </div>
         } @else {
           <div class="habits-grid">
-            @for (habit of activeHabits(); track habit.id) {
+            @for (habit of habitService.activeHabits(); track habit.id) {
               <div
                 class="habit-card"
                 [class.completed]="isHabitCompleted(habit.id)"
@@ -305,15 +305,15 @@ export class HabitDashboardComponent {
   showHabitForm = signal(false);
   editingHabit = signal<Habit | null>(null);
 
-  // These will be initialized in constructor
-  activeHabits!: ReturnType<typeof this.habitService.activeHabits>;
-  todayEntries!: ReturnType<typeof this.habitService.todayEntries>;
-
+  // Computed values based on service signals
   completedToday = computed(
-    () => this.todayEntries().filter((entry) => entry.completed).length,
+    () =>
+      this.habitService
+        .todayEntries()
+        .filter((entry: HabitEntry) => entry.completed).length,
   );
 
-  totalHabitsToday = computed(() => this.activeHabits().length);
+  totalHabitsToday = computed(() => this.habitService.activeHabits().length);
 
   progressOffset = computed(() => {
     const total = this.totalHabitsToday();
@@ -323,16 +323,22 @@ export class HabitDashboardComponent {
   });
 
   longestStreak = computed(() => {
-    const streaks = this.activeHabits().map(
-      (habit) => this.habitService.getHabitStats(habit.id).longestStreak,
-    );
+    const streaks = this.habitService
+      .activeHabits()
+      .map(
+        (habit: Habit) =>
+          this.habitService.getHabitStats(habit.id).longestStreak,
+      );
     return streaks.length > 0 ? Math.max(...streaks) : 0;
   });
 
   currentStreaks = computed(() => {
-    return this.activeHabits().filter(
-      (habit) => this.habitService.getHabitStats(habit.id).currentStreak > 0,
-    ).length;
+    return this.habitService
+      .activeHabits()
+      .filter(
+        (habit: Habit) =>
+          this.habitService.getHabitStats(habit.id).currentStreak > 0,
+      ).length;
   });
 
   weeklyCompletion = computed(() => {
@@ -347,17 +353,16 @@ export class HabitDashboardComponent {
     public habitService: HabitService,
     public statisticsService: StatisticsService,
     public themeService: ThemeService,
-  ) {
-    // Initialize signals after services are injected
-    this.activeHabits = this.habitService.activeHabits;
-    this.todayEntries = this.habitService.todayEntries;
-  }
+  ) {}
 
   isHabitCompleted(habitId: string): boolean {
     const today = new Date().toISOString().split("T")[0];
-    const entry = this.todayEntries().find(
-      (entry) => entry.habitId === habitId && entry.date === today,
-    );
+    const entry = this.habitService
+      .todayEntries()
+      .find(
+        (entry: HabitEntry) =>
+          entry.habitId === habitId && entry.date === today,
+      );
     return entry?.completed || false;
   }
 
