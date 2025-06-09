@@ -16,6 +16,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "reflection",
+    loadComponent: () =>
+      import("./components/reflection/reflection.component").then(
+        (m) => m.ReflectionComponent,
+      ),
+  },
+  {
     path: "**",
     redirectTo: "",
   },
