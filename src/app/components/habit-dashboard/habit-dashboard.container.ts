@@ -37,8 +37,6 @@ import { Habit, HabitEntry } from "../../models/habit.model";
       (toggleHabit)="toggleHabit($event)"
       (openHabitForm)="openHabitForm($event)"
       (closeHabitForm)="closeHabitForm()"
-      (habitCreated)="closeHabitForm()"
-      (habitUpdated)="closeHabitForm()"
       (openMoodTracker)="openMoodTracker()"
     >
     </app-habit-dashboard>
