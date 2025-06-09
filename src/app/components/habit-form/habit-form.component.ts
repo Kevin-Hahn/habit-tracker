@@ -224,7 +224,7 @@ interface HabitFormData {
                       type="button"
                       class="color-option"
                       [class.selected]="formData.color === color"
-                      [style.background-color]="color"
+                      [style.--color-value]="color"
                       (click)="updateField('color', color)"
                       [attr.aria-label]="'Select color ' + color"
                     ></button>
