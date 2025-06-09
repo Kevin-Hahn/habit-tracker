@@ -46,9 +46,10 @@ export class HabitFormContainerComponent {
     targetCount: 1,
   });
 
-  templates = this.habitService.getHabitTemplates();
+  templates!: ReturnType<typeof HabitService.prototype.getHabitTemplates>;
 
   constructor(private habitService: HabitService) {
+    this.templates = this.habitService.getHabitTemplates();
     // Initialize form data if editing
     if (this.editingHabit) {
       this.formData.set({
