@@ -7,15 +7,12 @@ import { Habit, HabitEntry, HabitStats } from "../models/habit.model";
   providedIn: "root",
 })
 export class HabitService {
-  // Signals for reactive state
   private habitsSignal = signal<Habit[]>([]);
   private entriesSignal = signal<HabitEntry[]>([]);
 
-  // Public readonly signals
   habits = this.habitsSignal.asReadonly();
   entries = this.entriesSignal.asReadonly();
 
-  // Computed values
   activeHabits = computed(() =>
     this.habits().filter((habit) => habit.isActive),
   );
