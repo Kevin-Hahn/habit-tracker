@@ -396,7 +396,7 @@ export class HabitDashboardComponent {
 
       const entry = this.habitService
         .getEntriesForDate(dateStr)
-        .find((entry) => entry.habitId === habitId);
+        .find((entry: HabitEntry) => entry.habitId === habitId);
 
       if (entry?.completed) {
         completedThisWeek++;
