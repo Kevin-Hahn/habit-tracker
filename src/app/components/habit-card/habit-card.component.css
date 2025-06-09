@@ -49,6 +49,7 @@
   border-radius: 50%;
   margin-top: 0.25rem;
   flex-shrink: 0;
+  background-color: var(--habit-color, var(--accent-primary));
 }
 
 .habit-details {
