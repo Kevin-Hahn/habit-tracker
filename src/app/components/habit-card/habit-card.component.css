@@ -71,7 +71,9 @@
   line-height: 1.4;
 }
 
-.habit-toggle, .habit-delete, .habit-edit {
+.habit-toggle,
+.habit-delete,
+.habit-edit {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -92,9 +94,9 @@
   transform: scale(1.05);
 }
 
-.habit-delete, .habit-edit {
-   margin-left: 0.5rem;
-   color: var(--border-color);
+.habit-delete,
+.habit-edit {
+  color: var(--border-color);
 }
 
 .habit-delete:hover {
@@ -163,6 +165,19 @@
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 500;
+}
+
+.habit-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-top: 1rem;
+}
+
+.habit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 @keyframes completionPulse {
