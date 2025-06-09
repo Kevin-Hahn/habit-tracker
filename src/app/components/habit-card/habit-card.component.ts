@@ -35,4 +35,8 @@ export class HabitCardComponent {
   handleDelete(): void {
     this.delete.emit();
   }
+
+  handleEdit(): void {
+    this.edit.emit();
+  }
 }

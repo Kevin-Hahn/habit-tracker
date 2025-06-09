@@ -1,8 +1,8 @@
-import { Component, signal, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { Component, EventEmitter, Input, Output, signal } from "@angular/core";
+import { Habit, HabitFrequency } from "../../models/habit.model";
 import { HabitService } from "../../services/habit.service";
 import { HabitFormComponent } from "./habit-form.component";
-import { Habit, HabitFrequency } from "../../models/habit.model";
 
 interface HabitFormData {
   name: string;
@@ -31,7 +31,35 @@ interface HabitFormData {
   `,
 })
 export class HabitFormContainerComponent {
-  @Input() editingHabit: Habit | null = null;
+  @Input() set editingHabit(habit: Habit | null) {
+    if (habit) {
+      this.formData.set({
+        name: habit.name,
+        description: habit.description || "",
+        frequency: { ...habit.frequency },
+        category: habit.category,
+        color: habit.color,
+        tags: [...habit.tags],
+        targetCount: habit.targetCount,
+      });
+    } else {
+      this.formData.set({
+        name: "",
+        description: "",
+        frequency: { type: "daily" },
+        category: "Health",
+        color: "#4ade80",
+        tags: [],
+        targetCount: 1,
+      });
+    }
+    this._editingHabit = habit;
+  }
+  private _editingHabit: Habit | null = null;
+  get editingHabit(): Habit | null {
+    return this._editingHabit;
+  }
+
   @Output() close = new EventEmitter<void>();
   @Output() habitCreated = new EventEmitter<Habit>();
   @Output() habitUpdated = new EventEmitter<Habit>();
