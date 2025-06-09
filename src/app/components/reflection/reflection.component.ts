@@ -269,8 +269,29 @@ import { MOOD_OPTIONS, ENERGY_LEVELS } from "../../constants/habit.constants";
               <button type="button" class="button-secondary" routerLink="/">
                 Cancel
               </button>
-              <button type="submit" class="button-primary">
-                Save Reflection
+              <button
+                type="submit"
+                class="button-primary"
+                [class.saving]="saveStatus === 'saving'"
+                [class.saved]="saveStatus === 'saved'"
+                [class.error]="saveStatus === 'error'"
+                [disabled]="saveStatus === 'saving'"
+              >
+                @switch (saveStatus) {
+                  @case ("saving") {
+                    <span class="saving-spinner"></span>
+                    Saving...
+                  }
+                  @case ("saved") {
+                    ✅ Saved!
+                  }
+                  @case ("error") {
+                    ❌ Error - Try Again
+                  }
+                  @default {
+                    Save Reflection
+                  }
+                }
               </button>
             </div>
           </form>
