@@ -16,6 +16,7 @@ import { WeeklyReflection } from "../../models/habit.model";
       [pastReflections]="pastReflections()"
       [currentWeekRange]="getCurrentWeekRange()"
       [saveStatus]="saveStatus()"
+      [isFormValid]="isFormValid()"
       (updateReflection)="updateReflection($event.key, $event.value)"
       (updateReflectionText)="updateReflectionText($event)"
       (addWin)="addWin($event)"
