@@ -164,10 +164,28 @@ export class ReflectionContainerComponent {
       this.saveStatus.set("saving");
 
       const current = this.currentReflection();
+      const reflectionTextValue = this.reflectionText();
+
+      // Check if reflection has any meaningful content
+      const hasContent =
+        reflectionTextValue.trim().length > 0 ||
+        (current.wins && current.wins.length > 0) ||
+        (current.challenges && current.challenges.length > 0) ||
+        (current.goals && current.goals.length > 0);
+
+      if (!hasContent) {
+        this.saveStatus.set("error");
+        setTimeout(() => {
+          this.saveStatus.set("idle");
+        }, 2000);
+        console.warn("Cannot save empty reflection. Please add some content.");
+        return;
+      }
+
       const reflection: WeeklyReflection = {
         id: this.generateId(),
         week: this.getCurrentWeek(),
-        reflection: this.reflectionText(),
+        reflection: reflectionTextValue,
         mood: current.mood || 3,
         energy: current.energy || 3,
         goals: current.goals || [],
