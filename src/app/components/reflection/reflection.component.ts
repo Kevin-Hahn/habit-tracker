@@ -22,7 +22,7 @@ export class ReflectionComponent {
 
   @Output() updateReflection = new EventEmitter<{
     key: keyof WeeklyReflection;
-    value: any;
+    value: number;
   }>();
   @Output() updateReflectionText = new EventEmitter<string>();
   @Output() addWin = new EventEmitter<string>();

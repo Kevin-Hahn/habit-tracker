@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { PROGRESS_RING_CONFIG } from "../../constants/ui.constants";
-import { Habit } from "../../models/habit.model";
+import { Habit, HabitStats } from "../../models/habit.model";
 import { HabitCardComponent } from "../habit-card/habit-card.component";
 
 @Component({
@@ -27,7 +27,7 @@ export class HabitDashboardComponent {
 
   // Function inputs for complex logic
   @Input() isHabitCompleted!: (habitId: string) => boolean;
-  @Input() getHabitStats!: (habitId: string) => any;
+  @Input() getHabitStats!: (habitId: string) => HabitStats;
   @Input() getWeeklyProgress!: (habitId: string) => number;
 
   @Output() toggleTheme = new EventEmitter<void>();

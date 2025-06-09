@@ -27,7 +27,7 @@ interface HabitFormData {
 })
 export class HabitFormComponent {
   @Input() formData!: HabitFormData;
-  @Input() templates: any[] = [];
+  @Input() templates: Partial<Habit>[] = [];
   @Input() editingHabit: Habit | null = null;
 
   @Output() updateFormData = new EventEmitter<Partial<HabitFormData>>();

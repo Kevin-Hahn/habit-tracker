@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
+import { AppSettings, Habit, HabitEntry, WeeklyReflection } from "../models/habit.model";
 
 @Injectable({
   providedIn: "root",
@@ -13,7 +14,7 @@ export class StorageService {
   };
 
   // Storage change notifications
-  private storageChange$ = new BehaviorSubject<{ key: string; data: any }>({
+  private storageChange$ = new BehaviorSubject<{ key: string; data: unknown }>({
     key: "",
     data: null,
   });
@@ -59,42 +60,42 @@ export class StorageService {
   }
 
   // Specific storage methods
-  saveHabits(habits: any[]): void {
+  saveHabits(habits: Habit[]): void {
     this.setItem(this.STORAGE_KEYS.HABITS, habits);
   }
 
-  getHabits(): any[] {
+  getHabits(): Habit[] {
     return this.getItem(this.STORAGE_KEYS.HABITS) || [];
   }
 
-  saveEntries(entries: any[]): void {
+  saveEntries(entries: HabitEntry[]): void {
     this.setItem(this.STORAGE_KEYS.ENTRIES, entries);
   }
 
-  getEntries(): any[] {
+  getEntries(): HabitEntry[] {
     return this.getItem(this.STORAGE_KEYS.ENTRIES) || [];
   }
 
-  saveSettings(settings: any): void {
+  saveSettings(settings: AppSettings): void {
     this.setItem(this.STORAGE_KEYS.SETTINGS, settings);
   }
 
-  getSettings(): any {
+  getSettings(): AppSettings {
     return (
       this.getItem(this.STORAGE_KEYS.SETTINGS) || this.getDefaultSettings()
     );
   }
 
-  saveReflections(reflections: any[]): void {
+  saveReflections(reflections: WeeklyReflection[]): void {
     this.setItem(this.STORAGE_KEYS.REFLECTIONS, reflections);
   }
 
-  getReflections(): any[] {
+  getReflections(): WeeklyReflection[] {
     return this.getItem(this.STORAGE_KEYS.REFLECTIONS) || [];
   }
 
   // Storage change observable
-  onStorageChange(): Observable<{ key: string; data: any }> {
+  onStorageChange(): Observable<{ key: string; data: unknown }> {
     return this.storageChange$.asObservable();
   }
 
@@ -134,7 +135,7 @@ export class StorageService {
     }
   }
 
-  private getDefaultSettings(): any {
+  private getDefaultSettings(): AppSettings {
     return {
       theme: "dark",
       notifications: {

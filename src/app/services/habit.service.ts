@@ -1,7 +1,6 @@
 import { Injectable, computed, signal } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
-import { StorageService } from "./storage.service";
 import { Habit, HabitEntry, HabitStats } from "../models/habit.model";
+import { StorageService } from "./storage.service";
 
 @Injectable({
   providedIn: "root",
@@ -34,14 +33,14 @@ export class HabitService {
     this.entriesSignal.set(entries);
   }
 
-  private parseHabitDates(habit: any): Habit {
+  private parseHabitDates(habit: Habit): Habit {
     return {
       ...habit,
       createdAt: new Date(habit.createdAt),
     };
   }
 
-  private parseEntryDates(entry: any): HabitEntry {
+  private parseEntryDates(entry: HabitEntry): HabitEntry {
     return {
       ...entry,
       completedAt: entry.completedAt ? new Date(entry.completedAt) : undefined,
@@ -101,13 +100,13 @@ export class HabitService {
       const updatedEntries = currentEntries.map((entry) =>
         entry.id === existingEntry.id
           ? {
-              ...entry,
-              completed: !entry.completed,
-              completedAt: !entry.completed ? new Date() : undefined,
-              count: !entry.completed
-                ? entry.count + 1
-                : Math.max(0, entry.count - 1),
-            }
+            ...entry,
+            completed: !entry.completed,
+            completedAt: !entry.completed ? new Date() : undefined,
+            count: !entry.completed
+              ? entry.count + 1
+              : Math.max(0, entry.count - 1),
+          }
           : entry,
       );
       this.entriesSignal.set(updatedEntries);
