@@ -57,7 +57,7 @@ interface RecentMood {
       <div class="today-section">
         <div class="section-container">
           <h2 class="section-title">How are you feeling today?</h2>
-          <p class="section-subtitle">{{ new Date() | date:'fullDate' }}</p>
+          <p class="section-subtitle">{{ currentDate | date: "fullDate" }}</p>
 
           <div class="mood-energy-grid">
             <!-- Mood Selection -->
@@ -286,6 +286,7 @@ export class MoodTrackerComponent {
 
   moods = MOOD_OPTIONS;
   energyLevels = ENERGY_LEVELS;
+  currentDate = new Date();
 
   getMoodEmoji(mood: number): string {
     const moodData = this.moods.find((m) => m.value === mood);
