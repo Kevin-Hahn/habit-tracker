@@ -220,28 +220,32 @@ interface HeatmapWeek {
       <div class="heatmap-section">
         <div class="section-header">
           <h2 class="section-title">Activity Heatmap</h2>
-          <p class="section-subtitle">Last 12 weeks of habit completion</p>
+          <p class="section-subtitle">
+            Full year view of your habit completion patterns
+          </p>
         </div>
 
         <div class="heatmap-container">
-          <div class="heatmap-grid">
-            @for (week of heatmapData; track $index; let weekIndex = $index) {
-              <div class="heatmap-week">
-                @for (day of week; track day.date) {
-                  <div
-                    class="heatmap-day"
-                    [class]="'level-' + day.level"
-                    [attr.data-date]="day.date"
-                    [attr.title]="
-                      day.date +
-                      ': ' +
-                      (day.value * 100).toFixed(0) +
-                      '% completion'
-                    "
-                  ></div>
-                }
-              </div>
-            }
+          <div class="heatmap-wrapper">
+            <div class="heatmap-grid">
+              @for (week of heatmapData; track $index; let weekIndex = $index) {
+                <div class="heatmap-week">
+                  @for (day of week; track day.date) {
+                    <div
+                      class="heatmap-day"
+                      [class]="'level-' + day.level"
+                      [attr.data-date]="day.date"
+                      [attr.title]="
+                        day.date +
+                        ': ' +
+                        (day.value * 100).toFixed(0) +
+                        '% completion'
+                      "
+                    ></div>
+                  }
+                </div>
+              }
+            </div>
           </div>
 
           <div class="heatmap-legend">

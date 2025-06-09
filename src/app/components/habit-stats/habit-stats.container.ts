@@ -79,15 +79,42 @@ export class HabitStatsContainerComponent {
   heatmapData = computed(() => {
     const endDate = new Date();
     const startDate = new Date();
-    startDate.setDate(endDate.getDate() - 12 * 7); // 12 weeks
+    startDate.setFullYear(endDate.getFullYear(), 0, 1); // Start of current year
+
+    // If we're early in the year, show previous year + current year for more data
+    const daysSinceYearStart = Math.floor(
+      (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+    );
+    if (daysSinceYearStart < 90) {
+      startDate.setFullYear(endDate.getFullYear() - 1, 0, 1); // Show previous year too
+    }
 
     const data = this.statisticsService.getHeatmapData(startDate, endDate);
 
-    // Group into weeks
+    // Group into weeks (7 days each)
     const weeks: Array<Array<{ date: string; value: number; level: number }>> =
       [];
-    for (let i = 0; i < data.length; i += 7) {
-      weeks.push(data.slice(i, i + 7));
+
+    // Start from the first Monday of the date range for proper week alignment
+    const firstDay = new Date(startDate);
+    const dayOfWeek = firstDay.getDay();
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    firstDay.setDate(firstDay.getDate() - daysToMonday);
+
+    let currentWeek: Array<{ date: string; value: number; level: number }> = [];
+
+    for (let i = 0; i < data.length; i++) {
+      currentWeek.push(data[i]);
+
+      if (currentWeek.length === 7) {
+        weeks.push(currentWeek);
+        currentWeek = [];
+      }
+    }
+
+    // Add any remaining days as the last week
+    if (currentWeek.length > 0) {
+      weeks.push(currentWeek);
     }
 
     return weeks;
