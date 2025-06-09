@@ -415,10 +415,16 @@
   padding: 1.5rem;
 }
 
+.heatmap-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .heatmap-grid {
   display: flex;
-  gap: 2px;
-  overflow-x: auto;
+  gap: 3px;
+  min-width: 100%;
+  width: fit-content;
   padding-bottom: 1rem;
   min-height: 120px;
   justify-content: flex-start;
@@ -427,20 +433,22 @@
 .heatmap-week {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   flex-shrink: 0;
+  min-width: 14px;
 }
 
 .heatmap-day {
-  width: 11px;
-  height: 11px;
-  border-radius: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 11px;
-  min-height: 11px;
+  min-width: 14px;
+  min-height: 14px;
+  flex-shrink: 0;
 }
 
 .heatmap-day:hover {
@@ -607,18 +615,22 @@
   }
 
   .heatmap-grid {
-    justify-content: flex-start;
-    gap: 1px;
+    gap: 2px;
+  }
+
+  .heatmap-week {
+    gap: 2px;
+    min-width: 12px;
   }
 
   .heatmap-day {
-    width: 9px;
-    height: 9px;
-    min-width: 9px;
-    min-height: 9px;
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
   }
 
-  .heatmap-container {
+  .heatmap-wrapper {
     overflow-x: auto;
   }
 }

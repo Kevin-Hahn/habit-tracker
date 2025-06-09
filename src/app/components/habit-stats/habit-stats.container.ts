@@ -79,42 +79,42 @@ export class HabitStatsContainerComponent {
   heatmapData = computed(() => {
     const endDate = new Date();
     const startDate = new Date();
-    startDate.setFullYear(endDate.getFullYear(), 0, 1); // Start of current year
 
-    // If we're early in the year, show previous year + current year for more data
-    const daysSinceYearStart = Math.floor(
-      (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
-    );
-    if (daysSinceYearStart < 90) {
-      startDate.setFullYear(endDate.getFullYear() - 1, 0, 1); // Show previous year too
-    }
+    // Always show a full year for meaningful data - go back 52 weeks from today
+    startDate.setDate(endDate.getDate() - 52 * 7);
 
     const data = this.statisticsService.getHeatmapData(startDate, endDate);
 
-    // Group into weeks (7 days each)
+    // Group into weeks (7 days each), ensuring we always have 52 weeks
     const weeks: Array<Array<{ date: string; value: number; level: number }>> =
       [];
 
-    // Start from the first Monday of the date range for proper week alignment
-    const firstDay = new Date(startDate);
-    const dayOfWeek = firstDay.getDay();
-    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-    firstDay.setDate(firstDay.getDate() - daysToMonday);
+    // Start from the beginning and create exactly 52 weeks
+    for (let weekIndex = 0; weekIndex < 52; weekIndex++) {
+      const weekStart = weekIndex * 7;
+      const weekEnd = Math.min(weekStart + 7, data.length);
 
-    let currentWeek: Array<{ date: string; value: number; level: number }> = [];
+      if (weekStart < data.length) {
+        const week = data.slice(weekStart, weekEnd);
 
-    for (let i = 0; i < data.length; i++) {
-      currentWeek.push(data[i]);
+        // If this week has fewer than 7 days, pad it with empty days
+        while (week.length < 7) {
+          const lastDate =
+            week.length > 0
+              ? week[week.length - 1].date
+              : startDate.toISOString().split("T")[0];
+          const nextDate = new Date(lastDate);
+          nextDate.setDate(nextDate.getDate() + 1);
 
-      if (currentWeek.length === 7) {
-        weeks.push(currentWeek);
-        currentWeek = [];
+          week.push({
+            date: nextDate.toISOString().split("T")[0],
+            value: 0,
+            level: 0,
+          });
+        }
+
+        weeks.push(week);
       }
-    }
-
-    // Add any remaining days as the last week
-    if (currentWeek.length > 0) {
-      weeks.push(currentWeek);
     }
 
     return weeks;

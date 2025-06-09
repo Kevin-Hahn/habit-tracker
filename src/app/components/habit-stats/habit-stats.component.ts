@@ -221,7 +221,7 @@ interface HeatmapWeek {
         <div class="section-header">
           <h2 class="section-title">Activity Heatmap</h2>
           <p class="section-subtitle">
-            Full year view of your habit completion patterns
+            Past 52 weeks of habit completion patterns
           </p>
         </div>
 
