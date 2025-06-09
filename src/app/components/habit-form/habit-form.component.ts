@@ -61,7 +61,7 @@ interface HabitFormData {
                   >
                     <div
                       class="template-color"
-                      [style.background-color]="template.color"
+                      [style.--template-color]="template.color"
                     ></div>
                     <div class="template-info">
                       <div class="template-name">{{ template.name }}</div>
