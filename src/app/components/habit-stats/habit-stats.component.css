@@ -265,15 +265,12 @@
   align-items: center;
   gap: 1rem;
   width: 100%;
-  min-width: 300px;
   flex-shrink: 0;
 }
 
 .category-info {
   flex: 1;
   min-width: 0;
-  overflow: visible;
-  box-sizing: border-box;
 }
 
 .category-name {
