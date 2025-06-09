@@ -2,12 +2,13 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { Habit } from "../../models/habit.model";
+import { HabitCardComponent } from "../habit-card/habit-card.component";
 import { PROGRESS_RING_CONFIG } from "../../constants/ui.constants";
 
 @Component({
   selector: "app-habit-dashboard",
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HabitCardComponent],
   template: `
     <div class="dashboard-container">
       <!-- Header -->
@@ -100,7 +101,7 @@ import { PROGRESS_RING_CONFIG } from "../../constants/ui.constants";
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">���</div>
+            <div class="stat-icon">⚡</div>
             <div class="stat-content">
               <div class="stat-number">{{ currentStreaks }}</div>
               <div class="stat-label">Active Streaks</div>

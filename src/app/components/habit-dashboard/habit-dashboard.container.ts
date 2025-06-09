@@ -6,6 +6,7 @@ import { StatisticsService } from "../../services/statistics.service";
 import { ThemeService } from "../../services/theme.service";
 import { HabitFormComponent } from "../habit-form/habit-form.component";
 import { HabitDashboardComponent } from "./habit-dashboard.component";
+import { HabitCardComponent } from "../habit-card/habit-card.component";
 import { Habit, HabitEntry } from "../../models/habit.model";
 
 @Component({
@@ -16,6 +17,7 @@ import { Habit, HabitEntry } from "../../models/habit.model";
     RouterModule,
     HabitFormComponent,
     HabitDashboardComponent,
+    HabitCardComponent,
   ],
   template: `
     <app-habit-dashboard
