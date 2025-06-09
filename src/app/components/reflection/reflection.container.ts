@@ -30,6 +30,7 @@ import { WeeklyReflection } from "../../models/habit.model";
 })
 export class ReflectionContainerComponent {
   reflectionText = signal("");
+  saveStatus = signal<"idle" | "saving" | "saved" | "error">("idle");
 
   currentReflection = signal<Partial<WeeklyReflection>>({
     mood: 3,
@@ -47,7 +48,10 @@ export class ReflectionContainerComponent {
     );
   });
 
-  constructor(private storageService: StorageService) {
+  constructor(
+    private storageService: StorageService,
+    private router: Router,
+  ) {
     this.loadCurrentWeekReflection();
   }
 
