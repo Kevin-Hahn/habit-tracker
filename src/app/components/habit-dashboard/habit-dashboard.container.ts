@@ -46,8 +46,8 @@ import { Habit, HabitEntry } from "../../models/habit.model";
       <app-habit-form
         [editingHabit]="editingHabit()"
         (close)="closeHabitForm()"
-        (habitCreated)="onHabitCreated($event)"
-        (habitUpdated)="onHabitUpdated($event)"
+        (habitCreated)="closeHabitForm()"
+        (habitUpdated)="closeHabitForm()"
       >
       </app-habit-form>
     }
