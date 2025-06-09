@@ -80,41 +80,41 @@ export class HabitStatsContainerComponent {
     const endDate = new Date();
     const startDate = new Date();
 
-    // Always show a full year for meaningful data - go back 52 weeks from today
-    startDate.setDate(endDate.getDate() - 52 * 7);
+    // Go back exactly 52 weeks (364 days) from today
+    startDate.setDate(endDate.getDate() - 364);
 
     const data = this.statisticsService.getHeatmapData(startDate, endDate);
 
-    // Group into weeks (7 days each), ensuring we always have 52 weeks
-    const weeks: Array<Array<{ date: string; value: number; level: number }>> =
+    // Ensure we have exactly 52 weeks (364 days)
+    const totalDays = 52 * 7;
+    const paddedData: Array<{ date: string; value: number; level: number }> =
       [];
 
-    // Start from the beginning and create exactly 52 weeks
-    for (let weekIndex = 0; weekIndex < 52; weekIndex++) {
-      const weekStart = weekIndex * 7;
-      const weekEnd = Math.min(weekStart + 7, data.length);
+    // Fill in any missing days at the beginning
+    for (let i = 0; i < totalDays; i++) {
+      const currentDate = new Date(startDate);
+      currentDate.setDate(startDate.getDate() + i);
+      const dateStr = currentDate.toISOString().split("T")[0];
 
-      if (weekStart < data.length) {
-        const week = data.slice(weekStart, weekEnd);
-
-        // If this week has fewer than 7 days, pad it with empty days
-        while (week.length < 7) {
-          const lastDate =
-            week.length > 0
-              ? week[week.length - 1].date
-              : startDate.toISOString().split("T")[0];
-          const nextDate = new Date(lastDate);
-          nextDate.setDate(nextDate.getDate() + 1);
-
-          week.push({
-            date: nextDate.toISOString().split("T")[0],
-            value: 0,
-            level: 0,
-          });
-        }
-
-        weeks.push(week);
+      const existingDay = data.find((d) => d.date === dateStr);
+      if (existingDay) {
+        paddedData.push(existingDay);
+      } else {
+        paddedData.push({
+          date: dateStr,
+          value: 0,
+          level: 0,
+        });
       }
+    }
+
+    // Group into exactly 52 weeks
+    const weeks: Array<Array<{ date: string; value: number; level: number }>> =
+      [];
+    for (let i = 0; i < 52; i++) {
+      const weekStart = i * 7;
+      const weekEnd = weekStart + 7;
+      weeks.push(paddedData.slice(weekStart, weekEnd));
     }
 
     return weeks;
