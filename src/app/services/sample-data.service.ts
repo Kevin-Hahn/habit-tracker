@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HabitService } from "./habit.service";
 import { StorageService } from "./storage.service";
 import { Habit, HabitEntry } from "../models/habit.model";
+import { HABIT_CATEGORIES, HABIT_COLORS } from "../constants/habit.constants";
 
 @Injectable({
   providedIn: "root",
@@ -27,8 +28,8 @@ export class SampleDataService {
         name: "Morning Exercise",
         description: "30 minutes of physical activity to start the day",
         frequency: { type: "daily" as const },
-        category: "Health",
-        color: "#10b981",
+        category: HABIT_CATEGORIES[0], // 'Health'
+        color: HABIT_COLORS[5], // '#10b981'
         tags: ["health", "fitness", "morning"],
         targetCount: 1,
         isActive: true,
@@ -37,8 +38,8 @@ export class SampleDataService {
         name: "Read for 30 min",
         description: "Daily reading habit for personal growth",
         frequency: { type: "daily" as const },
-        category: "Learning",
-        color: "#3b82f6",
+        category: HABIT_CATEGORIES[1], // 'Learning'
+        color: HABIT_COLORS[7], // '#3b82f6'
         tags: ["learning", "books", "growth"],
         targetCount: 1,
         isActive: true,
@@ -47,8 +48,8 @@ export class SampleDataService {
         name: "Drink Water",
         description: "Stay hydrated throughout the day",
         frequency: { type: "daily" as const },
-        category: "Health",
-        color: "#06b6d4",
+        category: HABIT_CATEGORIES[0], // 'Health'
+        color: HABIT_COLORS[12], // '#06b6d4'
         tags: ["health", "hydration"],
         targetCount: 8,
         isActive: true,
@@ -57,8 +58,8 @@ export class SampleDataService {
         name: "Journal",
         description: "Reflect and write down thoughts",
         frequency: { type: "daily" as const },
-        category: "Personal",
-        color: "#a78bfa",
+        category: HABIT_CATEGORIES[2], // 'Personal'
+        color: HABIT_COLORS[2], // '#a78bfa'
         tags: ["reflection", "writing", "mindfulness"],
         targetCount: 1,
         isActive: true,
@@ -67,8 +68,8 @@ export class SampleDataService {
         name: "Meditation",
         description: "10-15 minutes of mindfulness practice",
         frequency: { type: "daily" as const },
-        category: "Spiritual",
-        color: "#f59e0b",
+        category: HABIT_CATEGORIES[6], // 'Spiritual'
+        color: HABIT_COLORS[5], // '#f59e0b'
         tags: ["mindfulness", "mental-health", "peace"],
         targetCount: 1,
         isActive: true,
@@ -77,8 +78,8 @@ export class SampleDataService {
         name: "Practice Coding",
         description: "Work on programming skills and projects",
         frequency: { type: "weekly" as const, timesPerWeek: 5 },
-        category: "Learning",
-        color: "#8b5cf6",
+        category: HABIT_CATEGORIES[1], // 'Learning'
+        color: HABIT_COLORS[8], // '#8b5cf6'
         tags: ["coding", "skills", "career"],
         targetCount: 1,
         isActive: true,
@@ -87,8 +88,8 @@ export class SampleDataService {
         name: "Call Family",
         description: "Stay connected with family members",
         frequency: { type: "weekly" as const, timesPerWeek: 2 },
-        category: "Social",
-        color: "#ec4899",
+        category: HABIT_CATEGORIES[4], // 'Social'
+        color: HABIT_COLORS[9], // '#ec4899'
         tags: ["family", "relationships", "connection"],
         targetCount: 1,
         isActive: true,
