@@ -135,7 +135,10 @@ import { WeeklyReflection } from "../../models/habit.model";
                   </button>
                 </div>
 
-                @if (currentReflection().wins.length > 0) {
+                @if (
+                  currentReflection().wins &&
+                  currentReflection().wins!.length > 0
+                ) {
                   <div class="list-items">
                     @for (
                       win of currentReflection().wins;
@@ -181,7 +184,10 @@ import { WeeklyReflection } from "../../models/habit.model";
                   </button>
                 </div>
 
-                @if (currentReflection().challenges.length > 0) {
+                @if (
+                  currentReflection().challenges &&
+                  currentReflection().challenges!.length > 0
+                ) {
                   <div class="list-items">
                     @for (
                       challenge of currentReflection().challenges;
@@ -227,7 +233,10 @@ import { WeeklyReflection } from "../../models/habit.model";
                   </button>
                 </div>
 
-                @if (currentReflection().goals.length > 0) {
+                @if (
+                  currentReflection().goals &&
+                  currentReflection().goals!.length > 0
+                ) {
                   <div class="list-items">
                     @for (
                       goal of currentReflection().goals;

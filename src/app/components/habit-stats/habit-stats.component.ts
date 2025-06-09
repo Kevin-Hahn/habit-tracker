@@ -311,7 +311,8 @@ export class HabitStatsComponent {
     const data = this.statisticsService.getHeatmapData(startDate, endDate);
 
     // Group into weeks
-    const weeks: (typeof data)[][] = [];
+    const weeks: Array<Array<{ date: string; value: number; level: number }>> =
+      [];
     for (let i = 0; i < data.length; i += 7) {
       weeks.push(data.slice(i, i + 7));
     }

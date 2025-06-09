@@ -76,7 +76,7 @@ export class SampleDataService {
       {
         name: "Practice Coding",
         description: "Work on programming skills and projects",
-        frequency: { type: "weekly", timesPerWeek: 5 },
+        frequency: { type: "weekly" as const, timesPerWeek: 5 },
         category: "Learning",
         color: "#8b5cf6",
         tags: ["coding", "skills", "career"],
@@ -86,7 +86,7 @@ export class SampleDataService {
       {
         name: "Call Family",
         description: "Stay connected with family members",
-        frequency: { type: "weekly", timesPerWeek: 2 },
+        frequency: { type: "weekly" as const, timesPerWeek: 2 },
         category: "Social",
         color: "#ec4899",
         tags: ["family", "relationships", "connection"],
