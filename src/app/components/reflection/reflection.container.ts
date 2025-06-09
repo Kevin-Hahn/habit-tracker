@@ -1,9 +1,9 @@
-import { Component, signal, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { RouterModule, Router } from "@angular/router";
+import { Component, computed, signal } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { WeeklyReflection } from "../../models/habit.model";
 import { StorageService } from "../../services/storage.service";
 import { ReflectionComponent } from "./reflection.component";
-import { WeeklyReflection } from "../../models/habit.model";
 
 @Component({
   selector: "app-reflection-container",
@@ -16,7 +16,7 @@ import { WeeklyReflection } from "../../models/habit.model";
       [pastReflections]="pastReflections()"
       [currentWeekRange]="getCurrentWeekRange()"
       [saveStatus]="saveStatus()"
-      [isFormValid]="isFormValid()"
+      [isFormValid]="isFormValid() ?? false"
       (updateReflection)="updateReflection($event.key, $event.value)"
       (updateReflectionText)="updateReflectionText($event)"
       (addWin)="addWin($event)"
@@ -64,7 +64,6 @@ export class ReflectionContainerComponent {
 
   constructor(
     private storageService: StorageService,
-    private router: Router,
   ) {
     this.loadCurrentWeekReflection();
   }
@@ -179,71 +178,67 @@ export class ReflectionContainerComponent {
       const current = this.currentReflection();
       const reflectionTextValue = this.reflectionText();
 
-      // Check if reflection has any meaningful content
-      const hasContent =
-        reflectionTextValue.trim().length > 0 ||
-        (current.wins && current.wins.length > 0) ||
-        (current.challenges && current.challenges.length > 0) ||
-        (current.goals && current.goals.length > 0);
-
-      if (!hasContent) {
-        this.saveStatus.set("error");
-        setTimeout(() => {
-          this.saveStatus.set("idle");
-        }, 2000);
-        console.warn("Cannot save empty reflection. Please add some content.");
+      if (!this.hasContent(current, reflectionTextValue)) {
+        this.handleEmptyReflection();
         return;
       }
 
-      const reflection: WeeklyReflection = {
-        id: this.generateId(),
-        week: this.getCurrentWeek(),
-        reflection: reflectionTextValue,
-        mood: current.mood || 3,
-        energy: current.energy || 3,
-        goals: current.goals || [],
-        challenges: current.challenges || [],
-        wins: current.wins || [],
-        createdAt: new Date(),
-      };
-
-      // Get current reflections
+      const reflection = this.buildReflection(current, reflectionTextValue);
       const reflections = this.storageService.getReflections();
-      const existingIndex = reflections.findIndex(
-        (r) => r.week === reflection.week,
-      );
-
-      // Update existing or add new
-      if (existingIndex >= 0) {
-        // Keep the original ID and creation date for updates
-        reflection.id = reflections[existingIndex].id;
-        reflection.createdAt = reflections[existingIndex].createdAt;
-        reflections[existingIndex] = reflection;
-      } else {
-        reflections.push(reflection);
-      }
-
-      // Save to storage
+      this.saveOrUpdateReflection(reflections, reflection);
       this.storageService.saveReflections(reflections);
-
-      // Update status and provide feedback
       this.saveStatus.set("saved");
-
-      // Show success feedback temporarily
-      setTimeout(() => {
-        this.saveStatus.set("idle");
-      }, 2000);
-
+      setTimeout(() => this.saveStatus.set("idle"), 2000);
       console.log("Reflection saved successfully!", reflection);
     } catch (error) {
-      console.error("Error saving reflection:", error);
-      this.saveStatus.set("error");
-
-      // Reset error status after 3 seconds
-      setTimeout(() => {
-        this.saveStatus.set("idle");
-      }, 3000);
+      this.handleSaveError(error);
     }
+  }
+
+  private hasContent(current: Partial<WeeklyReflection>, reflectionTextValue: string): boolean {
+    return (
+      reflectionTextValue.trim().length > 0 ||
+      (!!current.wins && current.wins.length > 0) ||
+      (!!current.challenges && current.challenges.length > 0) ||
+      (!!current.goals && current.goals.length > 0)
+    );
+  }
+
+  private handleEmptyReflection(): void {
+    this.saveStatus.set("error");
+    setTimeout(() => this.saveStatus.set("idle"), 2000);
+    console.warn("Cannot save empty reflection. Please add some content.");
+  }
+
+  private buildReflection(current: Partial<WeeklyReflection>, reflectionTextValue: string): WeeklyReflection {
+    return {
+      id: this.generateId(),
+      week: this.getCurrentWeek(),
+      reflection: reflectionTextValue,
+      mood: current.mood || 3,
+      energy: current.energy || 3,
+      goals: current.goals || [],
+      challenges: current.challenges || [],
+      wins: current.wins || [],
+      createdAt: new Date(),
+    };
+  }
+
+  private saveOrUpdateReflection(reflections: WeeklyReflection[], reflection: WeeklyReflection): void {
+    const existingIndex = reflections.findIndex((r) => r.week === reflection.week);
+    if (existingIndex >= 0) {
+      reflection.id = reflections[existingIndex].id;
+      reflection.createdAt = reflections[existingIndex].createdAt;
+      reflections[existingIndex] = reflection;
+    } else {
+      reflections.push(reflection);
+    }
+  }
+
+  private handleSaveError(error: unknown): void {
+    console.error("Error saving reflection:", error);
+    this.saveStatus.set("error");
+    setTimeout(() => this.saveStatus.set("idle"), 3000);
   }
 
   private generateId(): string {
