@@ -237,7 +237,27 @@
   flex-direction: column;
   gap: 1rem;
   width: 100%;
-  overflow: hidden;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.category-chart::-webkit-scrollbar {
+  width: 6px;
+}
+
+.category-chart::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  border-radius: 3px;
+}
+
+.category-chart::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.category-chart::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
 }
 
 .category-row {
@@ -245,14 +265,14 @@
   align-items: center;
   gap: 1rem;
   width: 100%;
-  min-width: 0;
+  min-width: 300px;
+  flex-shrink: 0;
 }
 
 .category-info {
   flex: 1;
   min-width: 0;
-  max-width: 40%;
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
 }
 
