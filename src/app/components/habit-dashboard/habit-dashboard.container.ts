@@ -4,7 +4,7 @@ import { RouterModule, Router } from "@angular/router";
 import { HabitService } from "../../services/habit.service";
 import { StatisticsService } from "../../services/statistics.service";
 import { ThemeService } from "../../services/theme.service";
-import { HabitFormComponent } from "../habit-form/habit-form.component";
+import { HabitFormContainerComponent } from "../habit-form/habit-form.container";
 import { HabitDashboardComponent } from "./habit-dashboard.component";
 import { Habit, HabitEntry } from "../../models/habit.model";
 
@@ -14,7 +14,7 @@ import { Habit, HabitEntry } from "../../models/habit.model";
   imports: [
     CommonModule,
     RouterModule,
-    HabitFormComponent,
+    HabitFormContainerComponent,
     HabitDashboardComponent,
   ],
   template: `
@@ -43,13 +43,13 @@ import { Habit, HabitEntry } from "../../models/habit.model";
 
     <!-- Habit Form Modal -->
     @if (showHabitForm()) {
-      <app-habit-form
+      <app-habit-form-container
         [editingHabit]="editingHabit()"
         (close)="closeHabitForm()"
         (habitCreated)="closeHabitForm()"
         (habitUpdated)="closeHabitForm()"
       >
-      </app-habit-form>
+      </app-habit-form-container>
     }
   `,
 })

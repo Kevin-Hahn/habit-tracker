@@ -49,7 +49,7 @@ interface HabitFormData {
 
         <form class="habit-form" (ngSubmit)="submit.emit()">
           <!-- Quick Templates -->
-          @if (!editingHabit) {
+          @if (!editingHabit && templates && templates.length > 0) {
             <div class="form-section">
               <label class="section-label">Quick Start</label>
               <div class="templates-grid">
@@ -328,7 +328,7 @@ interface HabitFormData {
 })
 export class HabitFormComponent {
   @Input() formData!: HabitFormData;
-  @Input() templates!: any[];
+  @Input() templates: any[] = [];
   @Input() editingHabit: Habit | null = null;
 
   @Output() updateFormData = new EventEmitter<Partial<HabitFormData>>();

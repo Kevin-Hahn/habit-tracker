@@ -46,7 +46,7 @@ export class HabitFormContainerComponent {
     targetCount: 1,
   });
 
-  templates!: ReturnType<typeof HabitService.prototype.getHabitTemplates>;
+  templates: ReturnType<typeof HabitService.prototype.getHabitTemplates> = [];
 
   constructor(private habitService: HabitService) {
     this.templates = this.habitService.getHabitTemplates();
