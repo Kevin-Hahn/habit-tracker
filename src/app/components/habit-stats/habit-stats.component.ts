@@ -1,8 +1,31 @@
-import { Component, computed, signal } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { HabitService } from "../../services/habit.service";
-import { StatisticsService } from "../../services/statistics.service";
+import { CHART_LEVELS } from "../../constants/ui.constants";
+
+interface TrendData {
+  date: string;
+  rate: number;
+}
+
+interface CategoryStats {
+  category: string;
+  completionRate: number;
+  totalHabits: number;
+}
+
+interface StreakData {
+  habitId: string;
+  habitName: string;
+  currentStreak: number;
+  longestStreak: number;
+}
+
+interface HeatmapWeek {
+  date: string;
+  value: number;
+  level: number;
+}
 
 @Component({
   selector: "app-habit-stats",
@@ -42,7 +65,7 @@ import { StatisticsService } from "../../services/statistics.service";
           <div class="overview-card">
             <div class="card-icon">📊</div>
             <div class="card-content">
-              <div class="card-value">{{ totalHabits() }}</div>
+              <div class="card-value">{{ totalHabits }}</div>
               <div class="card-label">Active Habits</div>
             </div>
           </div>
@@ -50,7 +73,7 @@ import { StatisticsService } from "../../services/statistics.service";
           <div class="overview-card">
             <div class="card-icon">🔥</div>
             <div class="card-content">
-              <div class="card-value">{{ longestStreak() }}</div>
+              <div class="card-value">{{ longestStreak }}</div>
               <div class="card-label">Longest Streak</div>
             </div>
           </div>
@@ -58,7 +81,7 @@ import { StatisticsService } from "../../services/statistics.service";
           <div class="overview-card">
             <div class="card-icon">📈</div>
             <div class="card-content">
-              <div class="card-value">{{ completionRate() }}%</div>
+              <div class="card-value">{{ completionRate }}%</div>
               <div class="card-label">Completion Rate</div>
             </div>
           </div>
@@ -66,7 +89,7 @@ import { StatisticsService } from "../../services/statistics.service";
           <div class="overview-card">
             <div class="card-icon">⚡</div>
             <div class="card-content">
-              <div class="card-value">{{ activeStreaks() }}</div>
+              <div class="card-value">{{ activeStreaks }}</div>
               <div class="card-label">Current Streaks</div>
             </div>
           </div>
@@ -88,10 +111,10 @@ import { StatisticsService } from "../../services/statistics.service";
           </div>
           <div class="chart-container">
             <div class="trend-chart">
-              @for (point of trendData(); track point.date; let i = $index) {
+              @for (point of trendData; track point.date; let i = $index) {
                 <div
                   class="trend-point"
-                  [style.left.%]="(i / (trendData().length - 1)) * 100"
+                  [style.left.%]="(i / (trendData.length - 1)) * 100"
                   [style.bottom.%]="point.rate * 100"
                   [attr.data-date]="point.date"
                   [attr.data-rate]="(point.rate * 100).toFixed(0) + '%'"
@@ -103,7 +126,7 @@ import { StatisticsService } from "../../services/statistics.service";
                 preserveAspectRatio="none"
               >
                 <polyline
-                  [attr.points]="trendLinePoints()"
+                  [attr.points]="trendLinePoints"
                   fill="none"
                   stroke="var(--accent-primary)"
                   stroke-width="2"
@@ -120,7 +143,7 @@ import { StatisticsService } from "../../services/statistics.service";
           </div>
           <div class="chart-container">
             <div class="category-chart">
-              @for (category of categoryStats(); track category.category) {
+              @for (category of categoryStats; track category.category) {
                 <div class="category-row">
                   <div class="category-info">
                     <span class="category-name">{{ category.category }}</span>
@@ -152,7 +175,7 @@ import { StatisticsService } from "../../services/statistics.service";
           <h2 class="section-title">Current Streaks</h2>
         </div>
 
-        @if (streakData().length === 0) {
+        @if (streakData.length === 0) {
           <div class="empty-streaks">
             <div class="empty-icon">🎯</div>
             <p class="empty-text">
@@ -161,7 +184,7 @@ import { StatisticsService } from "../../services/statistics.service";
           </div>
         } @else {
           <div class="streaks-grid">
-            @for (streak of streakData(); track streak.habitId) {
+            @for (streak of streakData; track streak.habitId) {
               <div class="streak-card">
                 <div class="streak-header">
                   <h4 class="streak-habit-name">{{ streak.habitName }}</h4>
@@ -202,7 +225,7 @@ import { StatisticsService } from "../../services/statistics.service";
 
         <div class="heatmap-container">
           <div class="heatmap-grid">
-            @for (week of heatmapData(); track $index; let weekIndex = $index) {
+            @for (week of heatmapData; track $index; let weekIndex = $index) {
               <div class="heatmap-week">
                 @for (day of week; track day.date) {
                   <div
@@ -224,7 +247,7 @@ import { StatisticsService } from "../../services/statistics.service";
           <div class="heatmap-legend">
             <span class="legend-text">Less</span>
             <div class="legend-scale">
-              @for (level of [0, 1, 2, 3, 4]; track level) {
+              @for (level of chartLevels; track level) {
                 <div class="legend-square" [class]="'level-' + level"></div>
               }
             </div>
@@ -240,7 +263,7 @@ import { StatisticsService } from "../../services/statistics.service";
         </div>
 
         <div class="insights-grid">
-          @for (insight of insights(); track insight) {
+          @for (insight of insights; track insight) {
             <div class="insight-card">
               <div class="insight-icon">💡</div>
               <p class="insight-text">{{ insight }}</p>
@@ -253,79 +276,16 @@ import { StatisticsService } from "../../services/statistics.service";
   styleUrls: ["./habit-stats.component.css"],
 })
 export class HabitStatsComponent {
-  totalHabits = computed(() => this.habitService.activeHabits().length);
+  @Input() totalHabits!: number;
+  @Input() longestStreak!: number;
+  @Input() completionRate!: number;
+  @Input() activeStreaks!: number;
+  @Input() trendData!: TrendData[];
+  @Input() trendLinePoints!: string;
+  @Input() categoryStats!: CategoryStats[];
+  @Input() streakData!: StreakData[];
+  @Input() heatmapData!: HeatmapWeek[][];
+  @Input() insights!: string[];
 
-  longestStreak = computed(() => {
-    const streaks = this.habitService
-      .activeHabits()
-      .map((habit) => this.habitService.getHabitStats(habit.id).longestStreak);
-    return streaks.length > 0 ? Math.max(...streaks) : 0;
-  });
-
-  completionRate = computed(() => {
-    const trends = this.statisticsService.getCompletionTrend(30);
-    const average =
-      trends.reduce((sum, day) => sum + day.rate, 0) / trends.length;
-    return Math.round(average * 100);
-  });
-
-  activeStreaks = computed(() => {
-    return this.habitService
-      .activeHabits()
-      .filter(
-        (habit) => this.habitService.getHabitStats(habit.id).currentStreak > 0,
-      ).length;
-  });
-
-  trendData = computed(() => {
-    return this.statisticsService.getCompletionTrend(30);
-  });
-
-  trendLinePoints = computed(() => {
-    const data = this.trendData();
-    return data
-      .map((point, index) => {
-        const x = (index / (data.length - 1)) * 100;
-        const y = 100 - point.rate * 100;
-        return `${x},${y}`;
-      })
-      .join(" ");
-  });
-
-  categoryStats = computed(() => {
-    return this.statisticsService.getCategoryStats();
-  });
-
-  streakData = computed(() => {
-    return this.statisticsService
-      .getAllStreaks()
-      .filter((streak) => streak.currentStreak > 0)
-      .sort((a, b) => b.currentStreak - a.currentStreak);
-  });
-
-  heatmapData = computed(() => {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - 12 * 7); // 12 weeks
-
-    const data = this.statisticsService.getHeatmapData(startDate, endDate);
-
-    // Group into weeks
-    const weeks: Array<Array<{ date: string; value: number; level: number }>> =
-      [];
-    for (let i = 0; i < data.length; i += 7) {
-      weeks.push(data.slice(i, i + 7));
-    }
-
-    return weeks;
-  });
-
-  insights = computed(() => {
-    return this.statisticsService.getPersonalInsights();
-  });
-
-  constructor(
-    private habitService: HabitService,
-    private statisticsService: StatisticsService,
-  ) {}
+  chartLevels = CHART_LEVELS;
 }

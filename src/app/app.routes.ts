@@ -4,22 +4,22 @@ export const routes: Routes = [
   {
     path: "",
     loadComponent: () =>
-      import("./components/habit-dashboard/habit-dashboard.component").then(
-        (m) => m.HabitDashboardComponent,
+      import("./components/habit-dashboard/habit-dashboard.container").then(
+        (m) => m.HabitDashboardContainerComponent,
       ),
   },
   {
     path: "stats",
     loadComponent: () =>
-      import("./components/habit-stats/habit-stats.component").then(
-        (m) => m.HabitStatsComponent,
+      import("./components/habit-stats/habit-stats.container").then(
+        (m) => m.HabitStatsContainerComponent,
       ),
   },
   {
     path: "reflection",
     loadComponent: () =>
-      import("./components/reflection/reflection.component").then(
-        (m) => m.ReflectionComponent,
+      import("./components/reflection/reflection.container").then(
+        (m) => m.ReflectionContainerComponent,
       ),
   },
   {
