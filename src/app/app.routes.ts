@@ -16,6 +16,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "mood",
+    loadComponent: () =>
+      import("./components/mood-tracker/mood-tracker.container").then(
+        (m) => m.MoodTrackerContainerComponent,
+      ),
+  },
+  {
     path: "reflection",
     loadComponent: () =>
       import("./components/reflection/reflection.container").then(

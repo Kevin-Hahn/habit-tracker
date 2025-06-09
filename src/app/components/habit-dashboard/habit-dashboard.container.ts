@@ -1,6 +1,6 @@
 import { Component, computed, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { RouterModule } from "@angular/router";
+import { RouterModule, Router } from "@angular/router";
 import { HabitService } from "../../services/habit.service";
 import { StatisticsService } from "../../services/statistics.service";
 import { ThemeService } from "../../services/theme.service";
@@ -109,6 +109,7 @@ export class HabitDashboardContainerComponent {
     public habitService: HabitService,
     public statisticsService: StatisticsService,
     public themeService: ThemeService,
+    private router: Router,
   ) {}
 
   // Event handlers
@@ -127,7 +128,7 @@ export class HabitDashboardContainerComponent {
   }
 
   openMoodTracker(): void {
-    console.log("Open mood tracker - redirecting to reflection");
+    this.router.navigate(["/mood"]);
   }
 
   // Helper methods for child component

@@ -1,0 +1,299 @@
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
+import { MOOD_OPTIONS, ENERGY_LEVELS } from "../../constants/habit.constants";
+
+interface MoodStats {
+  average: number;
+  highest: number;
+  lowest: number;
+}
+
+interface TrendData {
+  date: string;
+  value: number;
+}
+
+interface RecentMood {
+  date: string;
+  mood: number;
+  energy: number;
+}
+
+@Component({
+  selector: "app-mood-tracker",
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
+  template: `
+    <div class="mood-tracker-container">
+      <!-- Header -->
+      <header class="mood-header">
+        <div class="header-content">
+          <button
+            class="back-button"
+            routerLink="/"
+            aria-label="Go back to dashboard"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M19 12H6m6-6l-6 6 6 6" />
+            </svg>
+          </button>
+          <div class="header-info">
+            <h1 class="mood-title">Mood & Energy Tracker</h1>
+            <p class="mood-subtitle">Track how you're feeling today</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Today's Mood -->
+      <div class="today-section">
+        <div class="section-container">
+          <h2 class="section-title">How are you feeling today?</h2>
+          <p class="section-subtitle">{{ new Date() | date:'fullDate' }}</p>
+
+          <div class="mood-energy-grid">
+            <!-- Mood Selection -->
+            <div class="mood-section">
+              <h3 class="subsection-title">Your Mood</h3>
+              <div class="mood-options">
+                @for (mood of moods; track mood.value) {
+                  <button
+                    class="mood-option"
+                    [class.selected]="todayMood === mood.value"
+                    (click)="updateMood.emit(mood.value)"
+                    [attr.aria-label]="mood.label"
+                  >
+                    <div class="mood-emoji">{{ mood.emoji }}</div>
+                    <div class="mood-label">{{ mood.label }}</div>
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- Energy Selection -->
+            <div class="energy-section">
+              <h3 class="subsection-title">Your Energy</h3>
+              <div class="energy-options">
+                @for (energy of energyLevels; track energy.value) {
+                  <button
+                    class="energy-option"
+                    [class.selected]="todayEnergy === energy.value"
+                    (click)="updateEnergy.emit(energy.value)"
+                    [attr.aria-label]="energy.label"
+                  >
+                    <div class="energy-icon">{{ energy.icon }}</div>
+                    <div class="energy-label">{{ energy.label }}</div>
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="notes-section">
+            <label for="mood-notes" class="notes-label"
+              >Additional Notes (Optional)</label
+            >
+            <textarea
+              id="mood-notes"
+              class="notes-textarea"
+              placeholder="How are you feeling? What's affecting your mood today?"
+              rows="3"
+              #notesInput
+            ></textarea>
+          </div>
+
+          <!-- Save Button -->
+          <div class="save-section">
+            <button
+              class="save-button"
+              (click)="saveMoodEntry.emit(notesInput.value || undefined)"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                />
+                <polyline points="17,21 17,13 7,13 7,21" />
+                <polyline points="7,3 7,8 15,8" />
+              </svg>
+              Save Today's Mood & Energy
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="stats-section">
+        <div class="section-container">
+          <h2 class="section-title">Your Mood & Energy Insights</h2>
+
+          <div class="stats-grid">
+            <!-- Mood Stats -->
+            <div class="stat-card">
+              <div class="stat-header">
+                <h3 class="stat-title">Mood Statistics</h3>
+                <div class="stat-icon">😊</div>
+              </div>
+              <div class="stat-values">
+                <div class="stat-item">
+                  <span class="stat-label">Average</span>
+                  <span class="stat-value">{{ moodStats.average }}/5</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Highest</span>
+                  <span class="stat-value">{{ moodStats.highest }}/5</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Lowest</span>
+                  <span class="stat-value">{{ moodStats.lowest }}/5</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Energy Stats -->
+            <div class="stat-card">
+              <div class="stat-header">
+                <h3 class="stat-title">Energy Statistics</h3>
+                <div class="stat-icon">⚡</div>
+              </div>
+              <div class="stat-values">
+                <div class="stat-item">
+                  <span class="stat-label">Average</span>
+                  <span class="stat-value">{{ energyStats.average }}/5</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Highest</span>
+                  <span class="stat-value">{{ energyStats.highest }}/5</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Lowest</span>
+                  <span class="stat-value">{{ energyStats.lowest }}/5</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Mood History -->
+      @if (recentMoods.length > 0) {
+        <div class="history-section">
+          <div class="section-container">
+            <h2 class="section-title">Recent Mood & Energy</h2>
+            <p class="section-subtitle">Last 7 days</p>
+
+            <div class="history-grid">
+              @for (entry of recentMoods; track entry.date) {
+                <div class="history-card">
+                  <div class="history-date">
+                    {{ entry.date | date: "MMM d" }}
+                  </div>
+                  <div class="history-values">
+                    <div class="history-mood">
+                      <span class="history-emoji">{{
+                        getMoodEmoji(entry.mood)
+                      }}</span>
+                      <span class="history-label">Mood</span>
+                    </div>
+                    <div class="history-energy">
+                      <span class="history-emoji">{{
+                        getEnergyIcon(entry.energy)
+                      }}</span>
+                      <span class="history-label">Energy</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Trends -->
+      @if (moodTrend.length > 0) {
+        <div class="trends-section">
+          <div class="section-container">
+            <h2 class="section-title">Mood & Energy Trends</h2>
+            <p class="section-subtitle">Track your patterns over time</p>
+
+            <div class="trends-grid">
+              <div class="trend-card">
+                <h3 class="trend-title">Mood Trend (30 days)</h3>
+                <div class="trend-chart">
+                  @for (point of moodTrend; track point.date; let i = $index) {
+                    <div
+                      class="trend-point mood-point"
+                      [style.left.%]="(i / (moodTrend.length - 1)) * 100"
+                      [style.bottom.%]="(point.value / 5) * 100"
+                      [attr.title]="point.date + ': ' + point.value + '/5'"
+                    ></div>
+                  }
+                </div>
+              </div>
+
+              <div class="trend-card">
+                <h3 class="trend-title">Energy Trend (30 days)</h3>
+                <div class="trend-chart">
+                  @for (
+                    point of energyTrend;
+                    track point.date;
+                    let i = $index
+                  ) {
+                    <div
+                      class="trend-point energy-point"
+                      [style.left.%]="(i / (energyTrend.length - 1)) * 100"
+                      [style.bottom.%]="(point.value / 5) * 100"
+                      [attr.title]="point.date + ': ' + point.value + '/5'"
+                    ></div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  `,
+  styleUrls: ["./mood-tracker.component.css"],
+})
+export class MoodTrackerComponent {
+  @Input() todayMood!: number;
+  @Input() todayEnergy!: number;
+  @Input() recentMoods!: RecentMood[];
+  @Input() moodTrend!: TrendData[];
+  @Input() energyTrend!: TrendData[];
+  @Input() moodStats!: MoodStats;
+  @Input() energyStats!: MoodStats;
+
+  @Output() updateMood = new EventEmitter<number>();
+  @Output() updateEnergy = new EventEmitter<number>();
+  @Output() saveMoodEntry = new EventEmitter<string | undefined>();
+
+  moods = MOOD_OPTIONS;
+  energyLevels = ENERGY_LEVELS;
+
+  getMoodEmoji(mood: number): string {
+    const moodData = this.moods.find((m) => m.value === mood);
+    return moodData?.emoji || "😐";
+  }
+
+  getEnergyIcon(energy: number): string {
+    const energyData = this.energyLevels.find((e) => e.value === energy);
+    return energyData?.icon || "🔋";
+  }
+}
