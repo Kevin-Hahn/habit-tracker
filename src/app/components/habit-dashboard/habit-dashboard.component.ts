@@ -1,16 +1,13 @@
-import { Component, computed, signal } from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { HabitService } from "../../services/habit.service";
-import { StatisticsService } from "../../services/statistics.service";
-import { ThemeService } from "../../services/theme.service";
-import { HabitFormComponent } from "../habit-form/habit-form.component";
-import { Habit, HabitEntry } from "../../models/habit.model";
+import { Habit } from "../../models/habit.model";
+import { PROGRESS_RING_CONFIG } from "../../constants/ui.constants";
 
 @Component({
   selector: "app-habit-dashboard",
   standalone: true,
-  imports: [CommonModule, RouterModule, HabitFormComponent],
+  imports: [CommonModule, RouterModule],
   template: `
     <div class="dashboard-container">
       <!-- Header -->
@@ -41,24 +38,22 @@ import { Habit, HabitEntry } from "../../models/habit.model";
                   cx="30"
                   cy="30"
                   [style.stroke-dasharray]="circumference"
-                  [style.stroke-dashoffset]="progressOffset()"
+                  [style.stroke-dashoffset]="progressOffset"
                 />
               </svg>
               <div class="progress-text">
-                <span class="progress-number">{{ completedToday() }}</span>
-                <span class="progress-total">/{{ totalHabitsToday() }}</span>
+                <span class="progress-number">{{ completedToday }}</span>
+                <span class="progress-total">/{{ totalHabitsToday }}</span>
               </div>
             </div>
             <button
               class="theme-toggle"
-              (click)="themeService.toggleTheme()"
+              (click)="toggleTheme.emit()"
               [attr.aria-label]="
-                'Switch to ' +
-                (themeService.isDark() ? 'light' : 'dark') +
-                ' theme'
+                'Switch to ' + (isDarkTheme ? 'light' : 'dark') + ' theme'
               "
             >
-              @if (themeService.isDark()) {
+              @if (isDarkTheme) {
                 <svg
                   width="20"
                   height="20"
@@ -93,21 +88,21 @@ import { Habit, HabitEntry } from "../../models/habit.model";
           <div class="stat-card">
             <div class="stat-icon">🔥</div>
             <div class="stat-content">
-              <div class="stat-number">{{ longestStreak() }}</div>
+              <div class="stat-number">{{ longestStreak }}</div>
               <div class="stat-label">Longest Streak</div>
             </div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">📈</div>
             <div class="stat-content">
-              <div class="stat-number">{{ weeklyCompletion() }}%</div>
+              <div class="stat-number">{{ weeklyCompletion }}%</div>
               <div class="stat-label">This Week</div>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">⚡</div>
+            <div class="stat-icon">���</div>
             <div class="stat-content">
-              <div class="stat-number">{{ currentStreaks() }}</div>
+              <div class="stat-number">{{ currentStreaks }}</div>
               <div class="stat-label">Active Streaks</div>
             </div>
           </div>
@@ -116,14 +111,14 @@ import { Habit, HabitEntry } from "../../models/habit.model";
 
       <!-- Habits List -->
       <main class="habits-main">
-        @if (habitService.activeHabits().length === 0) {
+        @if (activeHabits.length === 0) {
           <div class="empty-state">
             <div class="empty-icon">🎯</div>
             <h2 class="empty-title">No habits yet</h2>
             <p class="empty-description">
               Create your first habit to start building better routines
             </p>
-            <button class="create-habit-button" (click)="createFirstHabit()">
+            <button class="create-habit-button" (click)="openHabitForm.emit()">
               <svg
                 width="20"
                 height="20"
@@ -139,79 +134,16 @@ import { Habit, HabitEntry } from "../../models/habit.model";
           </div>
         } @else {
           <div class="habits-grid">
-            @for (habit of habitService.activeHabits(); track habit.id) {
-              <div
-                class="habit-card"
-                [class.completed]="isHabitCompleted(habit.id)"
+            @for (habit of activeHabits; track habit.id) {
+              <app-habit-card
+                [habit]="habit"
+                [isCompleted]="isHabitCompleted(habit.id)"
+                [stats]="getHabitStats(habit.id)"
+                [weeklyProgress]="getWeeklyProgress(habit.id)"
+                (toggle)="toggleHabit.emit(habit.id)"
+                (edit)="openHabitForm.emit(habit)"
               >
-                <div class="habit-header">
-                  <div class="habit-info">
-                    <div
-                      class="habit-color"
-                      [style.background-color]="habit.color"
-                    ></div>
-                    <div class="habit-details">
-                      <h3 class="habit-name">{{ habit.name }}</h3>
-                      @if (habit.description) {
-                        <p class="habit-description">{{ habit.description }}</p>
-                      }
-                    </div>
-                  </div>
-                  <button
-                    class="habit-toggle"
-                    [class.completed]="isHabitCompleted(habit.id)"
-                    (click)="toggleHabit(habit.id)"
-                    [attr.aria-label]="
-                      'Mark ' +
-                      habit.name +
-                      ' as ' +
-                      (isHabitCompleted(habit.id) ? 'incomplete' : 'complete')
-                    "
-                  >
-                    @if (isHabitCompleted(habit.id)) {
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path d="M20 6L9 17l-5-5" />
-                      </svg>
-                    } @else {
-                      <div class="toggle-circle"></div>
-                    }
-                  </button>
-                </div>
-
-                <div class="habit-stats">
-                  <div class="habit-stat">
-                    <span class="stat-value">{{
-                      getHabitStats(habit.id).currentStreak
-                    }}</span>
-                    <span class="stat-unit">day streak</span>
-                  </div>
-                  @if (habit.frequency.type === "weekly") {
-                    <div class="habit-stat">
-                      <span class="stat-value">{{
-                        getWeeklyProgress(habit.id)
-                      }}</span>
-                      <span class="stat-unit"
-                        >/ {{ habit.frequency.timesPerWeek }} this week</span
-                      >
-                    </div>
-                  }
-                </div>
-
-                @if (habit.tags && habit.tags.length > 0) {
-                  <div class="habit-tags">
-                    @for (tag of habit.tags; track tag) {
-                      <span class="habit-tag">{{ tag }}</span>
-                    }
-                  </div>
-                }
-              </div>
+              </app-habit-card>
             }
           </div>
         }
@@ -219,7 +151,7 @@ import { Habit, HabitEntry } from "../../models/habit.model";
         <!-- Floating Action Button -->
         <button
           class="fab"
-          (click)="openHabitForm()"
+          (click)="openHabitForm.emit()"
           aria-label="Add new habit"
         >
           <svg
@@ -251,7 +183,7 @@ import { Habit, HabitEntry } from "../../models/habit.model";
           </svg>
           Stats
         </button>
-        <button class="quick-action" (click)="openMoodTracker()">
+        <button class="quick-action" (click)="openMoodTracker.emit()">
           <svg
             width="20"
             height="20"
@@ -283,156 +215,34 @@ import { Habit, HabitEntry } from "../../models/habit.model";
         </button>
       </div>
     </div>
-
-    <!-- Habit Form Modal -->
-    @if (showHabitForm()) {
-      <app-habit-form
-        [editingHabit]="editingHabit()"
-        (close)="closeHabitForm()"
-        (habitCreated)="onHabitCreated($event)"
-        (habitUpdated)="onHabitUpdated($event)"
-      >
-      </app-habit-form>
-    }
   `,
   styleUrls: ["./habit-dashboard.component.css"],
 })
 export class HabitDashboardComponent {
-  todayDate = new Date();
-  circumference = 2 * Math.PI * 26; // radius 26
+  @Input() todayDate!: Date;
+  @Input() completedToday!: number;
+  @Input() totalHabitsToday!: number;
+  @Input() progressOffset!: number;
+  @Input() longestStreak!: number;
+  @Input() currentStreaks!: number;
+  @Input() weeklyCompletion!: number;
+  @Input() activeHabits!: Habit[];
+  @Input() isDarkTheme!: boolean;
+  @Input() showHabitForm!: boolean;
+  @Input() editingHabit!: Habit | null;
 
-  // Modal state
-  showHabitForm = signal(false);
-  editingHabit = signal<Habit | null>(null);
+  // Function inputs for complex logic
+  @Input() isHabitCompleted!: (habitId: string) => boolean;
+  @Input() getHabitStats!: (habitId: string) => any;
+  @Input() getWeeklyProgress!: (habitId: string) => number;
 
-  // Computed values based on service signals
-  completedToday = computed(
-    () =>
-      this.habitService
-        .todayEntries()
-        .filter((entry: HabitEntry) => entry.completed).length,
-  );
+  @Output() toggleTheme = new EventEmitter<void>();
+  @Output() toggleHabit = new EventEmitter<string>();
+  @Output() openHabitForm = new EventEmitter<Habit | undefined>();
+  @Output() closeHabitForm = new EventEmitter<void>();
+  @Output() habitCreated = new EventEmitter<Habit>();
+  @Output() habitUpdated = new EventEmitter<Habit>();
+  @Output() openMoodTracker = new EventEmitter<void>();
 
-  totalHabitsToday = computed(() => this.habitService.activeHabits().length);
-
-  progressOffset = computed(() => {
-    const total = this.totalHabitsToday();
-    const completed = this.completedToday();
-    const percentage = total > 0 ? completed / total : 0;
-    return this.circumference - percentage * this.circumference;
-  });
-
-  longestStreak = computed(() => {
-    const streaks = this.habitService
-      .activeHabits()
-      .map(
-        (habit: Habit) =>
-          this.habitService.getHabitStats(habit.id).longestStreak,
-      );
-    return streaks.length > 0 ? Math.max(...streaks) : 0;
-  });
-
-  currentStreaks = computed(() => {
-    return this.habitService
-      .activeHabits()
-      .filter(
-        (habit: Habit) =>
-          this.habitService.getHabitStats(habit.id).currentStreak > 0,
-      ).length;
-  });
-
-  weeklyCompletion = computed(() => {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
-    const weekStats = this.statisticsService.getWeekStats(startOfWeek);
-    return Math.round(weekStats.completionRate * 100);
-  });
-
-  constructor(
-    public habitService: HabitService,
-    public statisticsService: StatisticsService,
-    public themeService: ThemeService,
-  ) {}
-
-  isHabitCompleted(habitId: string): boolean {
-    const today = new Date().toISOString().split("T")[0];
-    const entry = this.habitService
-      .todayEntries()
-      .find(
-        (entry: HabitEntry) =>
-          entry.habitId === habitId && entry.date === today,
-      );
-    return entry?.completed || false;
-  }
-
-  toggleHabit(habitId: string): void {
-    this.habitService.toggleHabitCompletion(habitId);
-
-    // Add a subtle animation effect
-    const button = event?.target as HTMLButtonElement;
-    if (button) {
-      button.style.transform = "scale(0.95)";
-      setTimeout(() => {
-        button.style.transform = "scale(1)";
-      }, 150);
-    }
-  }
-
-  getHabitStats(habitId: string) {
-    return this.habitService.getHabitStats(habitId);
-  }
-
-  getWeeklyProgress(habitId: string): number {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
-
-    let completedThisWeek = 0;
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(startOfWeek);
-      date.setDate(startOfWeek.getDate() + i);
-      const dateStr = date.toISOString().split("T")[0];
-
-      const entry = this.habitService
-        .getEntriesForDate(dateStr)
-        .find((entry: HabitEntry) => entry.habitId === habitId);
-
-      if (entry?.completed) {
-        completedThisWeek++;
-      }
-    }
-
-    return completedThisWeek;
-  }
-
-  createFirstHabit(): void {
-    this.openHabitForm();
-  }
-
-  openHabitForm(habit?: Habit): void {
-    this.editingHabit.set(habit || null);
-    this.showHabitForm.set(true);
-  }
-
-  closeHabitForm(): void {
-    this.showHabitForm.set(false);
-    this.editingHabit.set(null);
-  }
-
-  onHabitCreated(habit: Habit): void {
-    // Habit is already created by the service, just close the modal
-    this.closeHabitForm();
-  }
-
-  onHabitUpdated(habit: Habit): void {
-    // Habit is already updated by the service, just close the modal
-    this.closeHabitForm();
-  }
-
-  openMoodTracker(): void {
-    // This would typically open a mood tracking modal
-    // For now, just navigate to reflection page
-    console.log("Open mood tracker - redirecting to reflection");
-  }
+  circumference = PROGRESS_RING_CONFIG.circumference;
 }

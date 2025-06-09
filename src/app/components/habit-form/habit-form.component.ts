@@ -1,15 +1,12 @@
-import {
-  Component,
-  signal,
-  computed,
-  Input,
-  Output,
-  EventEmitter,
-} from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { HabitService } from "../../services/habit.service";
 import { Habit, HabitFrequency } from "../../models/habit.model";
+import {
+  HABIT_CATEGORIES,
+  HABIT_COLORS,
+  WEEK_DAYS,
+} from "../../constants/habit.constants";
 
 interface HabitFormData {
   name: string;
@@ -34,7 +31,7 @@ interface HabitFormData {
           </h2>
           <button
             class="close-button"
-            (click)="onClose()"
+            (click)="close.emit()"
             aria-label="Close form"
           >
             <svg
@@ -50,7 +47,7 @@ interface HabitFormData {
           </button>
         </div>
 
-        <form class="habit-form" (ngSubmit)="onSubmit()">
+        <form class="habit-form" (ngSubmit)="submit.emit()">
           <!-- Quick Templates -->
           @if (!editingHabit) {
             <div class="form-section">
@@ -88,8 +85,8 @@ interface HabitFormData {
                 id="habit-name"
                 type="text"
                 class="form-input"
-                [ngModel]="formData().name"
-                (ngModelChange)="updateFormField('name', $event)"
+                [ngModel]="formData.name"
+                (ngModelChange)="updateField('name', $event)"
                 name="name"
                 placeholder="e.g., Morning Exercise"
                 required
@@ -104,8 +101,8 @@ interface HabitFormData {
               <textarea
                 id="habit-description"
                 class="form-textarea"
-                [ngModel]="formData().description"
-                (ngModelChange)="updateFormField('description', $event)"
+                [ngModel]="formData.description"
+                (ngModelChange)="updateField('description', $event)"
                 name="description"
                 placeholder="Optional details about your habit..."
                 rows="3"
@@ -122,7 +119,7 @@ interface HabitFormData {
               <button
                 type="button"
                 class="frequency-tab"
-                [class.active]="formData().frequency.type === 'daily'"
+                [class.active]="formData.frequency.type === 'daily'"
                 (click)="setFrequencyType('daily')"
               >
                 Daily
@@ -130,7 +127,7 @@ interface HabitFormData {
               <button
                 type="button"
                 class="frequency-tab"
-                [class.active]="formData().frequency.type === 'weekly'"
+                [class.active]="formData.frequency.type === 'weekly'"
                 (click)="setFrequencyType('weekly')"
               >
                 Weekly
@@ -138,14 +135,14 @@ interface HabitFormData {
               <button
                 type="button"
                 class="frequency-tab"
-                [class.active]="formData().frequency.type === 'custom'"
+                [class.active]="formData.frequency.type === 'custom'"
                 (click)="setFrequencyType('custom')"
               >
                 Custom
               </button>
             </div>
 
-            @if (formData().frequency.type === "weekly") {
+            @if (formData.frequency.type === "weekly") {
               <div class="form-group">
                 <label class="form-label">Times per week</label>
                 <div class="number-input-container">
@@ -153,14 +150,14 @@ interface HabitFormData {
                     type="button"
                     class="number-button"
                     (click)="adjustTimesPerWeek(-1)"
-                    [disabled]="(formData().frequency.timesPerWeek || 1) <= 1"
+                    [disabled]="(formData.frequency.timesPerWeek || 1) <= 1"
                   >
                     -
                   </button>
                   <input
                     type="number"
                     class="number-input"
-                    [ngModel]="formData().frequency.timesPerWeek"
+                    [ngModel]="formData.frequency.timesPerWeek"
                     (ngModelChange)="
                       updateFrequencyField('timesPerWeek', $event)
                     "
@@ -172,7 +169,7 @@ interface HabitFormData {
                     type="button"
                     class="number-button"
                     (click)="adjustTimesPerWeek(1)"
-                    [disabled]="(formData().frequency.timesPerWeek || 1) >= 7"
+                    [disabled]="(formData.frequency.timesPerWeek || 1) >= 7"
                   >
                     +
                   </button>
@@ -180,11 +177,11 @@ interface HabitFormData {
               </div>
             }
 
-            @if (formData().frequency.type === "custom") {
+            @if (formData.frequency.type === "custom") {
               <div class="form-group">
                 <label class="form-label">Select days</label>
                 <div class="days-grid">
-                  @for (day of weekDays; track day.value; let i = $index) {
+                  @for (day of weekDays; track day.value) {
                     <button
                       type="button"
                       class="day-button"
@@ -209,8 +206,8 @@ interface HabitFormData {
                 <select
                   id="habit-category"
                   class="form-select"
-                  [ngModel]="formData().category"
-                  (ngModelChange)="updateFormField('category', $event)"
+                  [ngModel]="formData.category"
+                  (ngModelChange)="updateField('category', $event)"
                   name="category"
                 >
                   @for (category of categories; track category) {
@@ -226,9 +223,9 @@ interface HabitFormData {
                     <button
                       type="button"
                       class="color-option"
-                      [class.selected]="formData().color === color"
+                      [class.selected]="formData.color === color"
                       [style.background-color]="color"
-                      (click)="updateFormField('color', color)"
+                      (click)="updateField('color', color)"
                       [attr.aria-label]="'Select color ' + color"
                     ></button>
                   }
@@ -238,7 +235,7 @@ interface HabitFormData {
           </div>
 
           <!-- Target Count -->
-          @if (formData().frequency.type === "daily") {
+          @if (formData.frequency.type === "daily") {
             <div class="form-section">
               <label class="section-label">Target Count</label>
               <div class="form-group">
@@ -248,15 +245,15 @@ interface HabitFormData {
                     type="button"
                     class="number-button"
                     (click)="adjustTargetCount(-1)"
-                    [disabled]="formData().targetCount <= 1"
+                    [disabled]="formData.targetCount <= 1"
                   >
                     -
                   </button>
                   <input
                     type="number"
                     class="number-input"
-                    [ngModel]="formData().targetCount"
-                    (ngModelChange)="updateFormField('targetCount', $event)"
+                    [ngModel]="formData.targetCount"
+                    (ngModelChange)="updateField('targetCount', $event)"
                     name="targetCount"
                     min="1"
                     max="10"
@@ -265,7 +262,7 @@ interface HabitFormData {
                     type="button"
                     class="number-button"
                     (click)="adjustTargetCount(1)"
-                    [disabled]="formData().targetCount >= 10"
+                    [disabled]="formData.targetCount >= 10"
                   >
                     +
                   </button>
@@ -286,9 +283,9 @@ interface HabitFormData {
                 #tagInput
               />
 
-              @if (formData().tags.length > 0) {
+              @if (formData.tags.length > 0) {
                 <div class="tags-list">
-                  @for (tag of formData().tags; track tag; let i = $index) {
+                  @for (tag of formData.tags; track tag; let i = $index) {
                     <span class="tag">
                       {{ tag }}
                       <button
@@ -308,7 +305,11 @@ interface HabitFormData {
 
           <!-- Form Actions -->
           <div class="form-actions">
-            <button type="button" class="button-secondary" (click)="onClose()">
+            <button
+              type="button"
+              class="button-secondary"
+              (click)="close.emit()"
+            >
               Cancel
             </button>
             <button
@@ -326,108 +327,39 @@ interface HabitFormData {
   styleUrls: ["./habit-form.component.css"],
 })
 export class HabitFormComponent {
+  @Input() formData!: HabitFormData;
+  @Input() templates!: any[];
   @Input() editingHabit: Habit | null = null;
+
+  @Output() updateFormData = new EventEmitter<Partial<HabitFormData>>();
+  @Output() submit = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
-  @Output() habitCreated = new EventEmitter<Habit>();
-  @Output() habitUpdated = new EventEmitter<Habit>();
 
-  formData = signal<HabitFormData>({
-    name: "",
-    description: "",
-    frequency: { type: "daily" },
-    category: "Health",
-    color: "#4ade80",
-    tags: [],
-    targetCount: 1,
-  });
+  categories = HABIT_CATEGORIES;
+  colors = HABIT_COLORS;
+  weekDays = WEEK_DAYS;
 
-  templates!: ReturnType<typeof this.habitService.getHabitTemplates>;
-
-  categories = [
-    "Health",
-    "Learning",
-    "Personal",
-    "Work",
-    "Social",
-    "Creative",
-    "Spiritual",
-    "Other",
-  ];
-
-  colors = [
-    "#4ade80",
-    "#60a5fa",
-    "#a78bfa",
-    "#f472b6",
-    "#fb7185",
-    "#f59e0b",
-    "#10b981",
-    "#3b82f6",
-    "#8b5cf6",
-    "#ec4899",
-    "#ef4444",
-    "#f97316",
-    "#06b6d4",
-    "#84cc16",
-    "#6366f1",
-    "#d946ef",
-    "#ff6b6b",
-    "#ffd93d",
-  ];
-
-  weekDays = [
-    { value: 1, short: "Mon", full: "Monday" },
-    { value: 2, short: "Tue", full: "Tuesday" },
-    { value: 3, short: "Wed", full: "Wednesday" },
-    { value: 4, short: "Thu", full: "Thursday" },
-    { value: 5, short: "Fri", full: "Friday" },
-    { value: 6, short: "Sat", full: "Saturday" },
-    { value: 0, short: "Sun", full: "Sunday" },
-  ];
-
-  constructor(private habitService: HabitService) {
-    this.templates = this.habitService.getHabitTemplates();
-
-    // Initialize form data if editing
-    if (this.editingHabit) {
-      this.formData.set({
-        name: this.editingHabit.name,
-        description: this.editingHabit.description || "",
-        frequency: { ...this.editingHabit.frequency },
-        category: this.editingHabit.category,
-        color: this.editingHabit.color,
-        tags: [...this.editingHabit.tags],
-        targetCount: this.editingHabit.targetCount,
-      });
-    }
-  }
-
-  updateFormField<K extends keyof HabitFormData>(
+  updateField<K extends keyof HabitFormData>(
     field: K,
     value: HabitFormData[K],
   ): void {
-    this.formData.update((current) => ({
-      ...current,
-      [field]: value,
-    }));
+    this.updateFormData.emit({ [field]: value });
   }
 
   updateFrequencyField<K extends keyof HabitFrequency>(
     field: K,
     value: HabitFrequency[K],
   ): void {
-    this.formData.update((current) => ({
-      ...current,
+    this.updateFormData.emit({
       frequency: {
-        ...current.frequency,
+        ...this.formData.frequency,
         [field]: value,
       },
-    }));
+    });
   }
 
   applyTemplate(template: Partial<Habit>): void {
-    this.formData.update((current) => ({
-      ...current,
+    this.updateFormData.emit({
       name: template.name || "",
       description: template.description || "",
       frequency: template.frequency || { type: "daily" },
@@ -435,59 +367,45 @@ export class HabitFormComponent {
       color: template.color || "#4ade80",
       tags: template.tags ? [...template.tags] : [],
       targetCount: template.targetCount || 1,
-    }));
+    });
   }
 
   setFrequencyType(type: "daily" | "weekly" | "custom"): void {
-    this.formData.update((current) => ({
-      ...current,
+    this.updateFormData.emit({
       frequency: {
         type,
         timesPerWeek: type === "weekly" ? 3 : undefined,
         daysOfWeek: type === "custom" ? [] : undefined,
       },
-    }));
+    });
   }
 
   adjustTimesPerWeek(delta: number): void {
-    this.formData.update((current) => ({
-      ...current,
-      frequency: {
-        ...current.frequency,
-        timesPerWeek: Math.max(
-          1,
-          Math.min(7, (current.frequency.timesPerWeek || 3) + delta),
-        ),
-      },
-    }));
+    const current = this.formData.frequency.timesPerWeek || 3;
+    this.updateFrequencyField(
+      "timesPerWeek",
+      Math.max(1, Math.min(7, current + delta)),
+    );
   }
 
   adjustTargetCount(delta: number): void {
-    this.formData.update((current) => ({
-      ...current,
-      targetCount: Math.max(1, Math.min(10, current.targetCount + delta)),
-    }));
+    this.updateField(
+      "targetCount",
+      Math.max(1, Math.min(10, this.formData.targetCount + delta)),
+    );
   }
 
   isDaySelected(day: number): boolean {
-    return this.formData().frequency.daysOfWeek?.includes(day) || false;
+    return this.formData.frequency.daysOfWeek?.includes(day) || false;
   }
 
   toggleDay(day: number): void {
-    this.formData.update((current) => {
-      const daysOfWeek = current.frequency.daysOfWeek || [];
-      const newDays = daysOfWeek.includes(day)
-        ? daysOfWeek.filter((d) => d !== day)
-        : [...daysOfWeek, day];
+    const daysOfWeek = this.formData.frequency.daysOfWeek || [];
+    const newDays = daysOfWeek.includes(day)
+      ? daysOfWeek.filter((d) => d !== day)
+      : [...daysOfWeek, day];
 
-      return {
-        ...current,
-        frequency: {
-          ...current.frequency,
-          daysOfWeek: newDays,
-        },
-      };
-    });
+    this.updateFrequencyField("daysOfWeek", newDays);
   }
 
   addTag(event: Event): void {
@@ -495,68 +413,34 @@ export class HabitFormComponent {
     const input = event.target as HTMLInputElement;
     const tag = input.value.trim().toLowerCase();
 
-    if (tag && !this.formData().tags.includes(tag)) {
-      this.formData.update((current) => ({
-        ...current,
-        tags: [...current.tags, tag],
-      }));
+    if (tag && !this.formData.tags.includes(tag)) {
+      this.updateField("tags", [...this.formData.tags, tag]);
       input.value = "";
     }
   }
 
   removeTag(index: number): void {
-    this.formData.update((current) => ({
-      ...current,
-      tags: current.tags.filter((_, i) => i !== index),
-    }));
+    this.updateField(
+      "tags",
+      this.formData.tags.filter((_, i) => i !== index),
+    );
   }
 
   isFormValid(): boolean {
-    const data = this.formData();
-    const hasName = data.name.trim().length > 0;
+    const hasName = this.formData.name.trim().length > 0;
     const hasValidFrequency =
-      data.frequency.type === "daily" ||
-      (data.frequency.type === "weekly" &&
-        (data.frequency.timesPerWeek || 0) > 0) ||
-      (data.frequency.type === "custom" &&
-        (data.frequency.daysOfWeek?.length || 0) > 0);
+      this.formData.frequency.type === "daily" ||
+      (this.formData.frequency.type === "weekly" &&
+        (this.formData.frequency.timesPerWeek || 0) > 0) ||
+      (this.formData.frequency.type === "custom" &&
+        (this.formData.frequency.daysOfWeek?.length || 0) > 0);
 
     return hasName && hasValidFrequency;
   }
 
-  onSubmit(): void {
-    if (!this.isFormValid()) return;
-
-    const data = this.formData();
-    const habitData = {
-      name: data.name.trim(),
-      description: data.description.trim(),
-      frequency: data.frequency,
-      category: data.category,
-      color: data.color,
-      tags: data.tags,
-      targetCount: data.targetCount,
-      isActive: true,
-    };
-
-    if (this.editingHabit) {
-      this.habitService.updateHabit(this.editingHabit.id, habitData);
-      this.habitUpdated.emit({ ...this.editingHabit, ...habitData });
-    } else {
-      const newHabit = this.habitService.createHabit(habitData);
-      this.habitCreated.emit(newHabit);
-    }
-
-    this.onClose();
-  }
-
-  onClose(): void {
-    this.close.emit();
-  }
-
   onOverlayClick(event: Event): void {
     if (event.target === event.currentTarget) {
-      this.onClose();
+      this.close.emit();
     }
   }
 }

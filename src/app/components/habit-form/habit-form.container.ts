@@ -1,0 +1,115 @@
+import { Component, signal, Input, Output, EventEmitter } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { HabitService } from "../../services/habit.service";
+import { HabitFormComponent } from "./habit-form.component";
+import { Habit, HabitFrequency } from "../../models/habit.model";
+
+interface HabitFormData {
+  name: string;
+  description: string;
+  frequency: HabitFrequency;
+  category: string;
+  color: string;
+  tags: string[];
+  targetCount: number;
+}
+
+@Component({
+  selector: "app-habit-form-container",
+  standalone: true,
+  imports: [CommonModule, HabitFormComponent],
+  template: `
+    <app-habit-form
+      [formData]="formData()"
+      [templates]="templates"
+      [editingHabit]="editingHabit"
+      (updateFormData)="updateFormData($event)"
+      (submit)="onSubmit()"
+      (close)="onClose()"
+    >
+    </app-habit-form>
+  `,
+})
+export class HabitFormContainerComponent {
+  @Input() editingHabit: Habit | null = null;
+  @Output() close = new EventEmitter<void>();
+  @Output() habitCreated = new EventEmitter<Habit>();
+  @Output() habitUpdated = new EventEmitter<Habit>();
+
+  formData = signal<HabitFormData>({
+    name: "",
+    description: "",
+    frequency: { type: "daily" },
+    category: "Health",
+    color: "#4ade80",
+    tags: [],
+    targetCount: 1,
+  });
+
+  templates = this.habitService.getHabitTemplates();
+
+  constructor(private habitService: HabitService) {
+    // Initialize form data if editing
+    if (this.editingHabit) {
+      this.formData.set({
+        name: this.editingHabit.name,
+        description: this.editingHabit.description || "",
+        frequency: { ...this.editingHabit.frequency },
+        category: this.editingHabit.category,
+        color: this.editingHabit.color,
+        tags: [...this.editingHabit.tags],
+        targetCount: this.editingHabit.targetCount,
+      });
+    }
+  }
+
+  updateFormData(updates: Partial<HabitFormData>): void {
+    this.formData.update((current) => ({
+      ...current,
+      ...updates,
+    }));
+  }
+
+  isFormValid(): boolean {
+    const data = this.formData();
+    const hasName = data.name.trim().length > 0;
+    const hasValidFrequency =
+      data.frequency.type === "daily" ||
+      (data.frequency.type === "weekly" &&
+        (data.frequency.timesPerWeek || 0) > 0) ||
+      (data.frequency.type === "custom" &&
+        (data.frequency.daysOfWeek?.length || 0) > 0);
+
+    return hasName && hasValidFrequency;
+  }
+
+  onSubmit(): void {
+    if (!this.isFormValid()) return;
+
+    const data = this.formData();
+    const habitData = {
+      name: data.name.trim(),
+      description: data.description.trim(),
+      frequency: data.frequency,
+      category: data.category,
+      color: data.color,
+      tags: data.tags,
+      targetCount: data.targetCount,
+      isActive: true,
+    };
+
+    if (this.editingHabit) {
+      this.habitService.updateHabit(this.editingHabit.id, habitData);
+      this.habitUpdated.emit({ ...this.editingHabit, ...habitData });
+    } else {
+      const newHabit = this.habitService.createHabit(habitData);
+      this.habitCreated.emit(newHabit);
+    }
+
+    this.onClose();
+  }
+
+  onClose(): void {
+    this.close.emit();
+  }
+}
