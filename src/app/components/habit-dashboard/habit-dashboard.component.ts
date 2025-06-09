@@ -41,7 +41,7 @@ import { Habit, HabitEntry } from "../../models/habit.model";
                   cx="30"
                   cy="30"
                   [style.stroke-dasharray]="circumference"
-                  [style.stroke-dashoffset]="progressOffset"
+                  [style.stroke-dashoffset]="progressOffset()"
                 />
               </svg>
               <div class="progress-text">
@@ -305,8 +305,9 @@ export class HabitDashboardComponent {
   showHabitForm = signal(false);
   editingHabit = signal<Habit | null>(null);
 
-  activeHabits = this.habitService.activeHabits;
-  todayEntries = this.habitService.todayEntries;
+  // These will be initialized in constructor
+  activeHabits!: ReturnType<typeof this.habitService.activeHabits>;
+  todayEntries!: ReturnType<typeof this.habitService.todayEntries>;
 
   completedToday = computed(
     () => this.todayEntries().filter((entry) => entry.completed).length,
@@ -346,7 +347,11 @@ export class HabitDashboardComponent {
     public habitService: HabitService,
     public statisticsService: StatisticsService,
     public themeService: ThemeService,
-  ) {}
+  ) {
+    // Initialize signals after services are injected
+    this.activeHabits = this.habitService.activeHabits;
+    this.todayEntries = this.habitService.todayEntries;
+  }
 
   isHabitCompleted(habitId: string): boolean {
     const today = new Date().toISOString().split("T")[0];

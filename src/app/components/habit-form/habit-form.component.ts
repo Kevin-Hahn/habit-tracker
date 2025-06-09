@@ -103,7 +103,7 @@ interface HabitFormData {
               <textarea
                 id="habit-description"
                 class="form-textarea"
-                [(ngModel)]="formData.description"
+                [(ngModel)]="formData().description"
                 name="description"
                 placeholder="Optional details about your habit..."
                 rows="3"
@@ -120,7 +120,7 @@ interface HabitFormData {
               <button
                 type="button"
                 class="frequency-tab"
-                [class.active]="formData.frequency.type === 'daily'"
+                [class.active]="formData().frequency.type === 'daily'"
                 (click)="setFrequencyType('daily')"
               >
                 Daily
@@ -334,7 +334,7 @@ export class HabitFormComponent {
     targetCount: 1,
   });
 
-  templates = this.habitService.getHabitTemplates();
+  templates!: ReturnType<typeof this.habitService.getHabitTemplates>;
 
   categories = [
     "Health",
@@ -379,6 +379,8 @@ export class HabitFormComponent {
   ];
 
   constructor(private habitService: HabitService) {
+    this.templates = this.habitService.getHabitTemplates();
+
     // Initialize form data if editing
     if (this.editingHabit) {
       this.formData.set({
