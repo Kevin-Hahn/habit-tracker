@@ -49,6 +49,18 @@ export class ReflectionContainerComponent {
     );
   });
 
+  isFormValid = computed(() => {
+    const current = this.currentReflection();
+    const reflectionTextValue = this.reflectionText();
+
+    return (
+      reflectionTextValue.trim().length > 0 ||
+      (current.wins && current.wins.length > 0) ||
+      (current.challenges && current.challenges.length > 0) ||
+      (current.goals && current.goals.length > 0)
+    );
+  });
+
   constructor(
     private storageService: StorageService,
     private router: Router,
