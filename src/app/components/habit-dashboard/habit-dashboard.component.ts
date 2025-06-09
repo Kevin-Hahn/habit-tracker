@@ -4,12 +4,13 @@ import { RouterModule } from "@angular/router";
 import { HabitService } from "../../services/habit.service";
 import { StatisticsService } from "../../services/statistics.service";
 import { ThemeService } from "../../services/theme.service";
+import { HabitFormComponent } from "../habit-form/habit-form.component";
 import { Habit, HabitEntry } from "../../models/habit.model";
 
 @Component({
   selector: "app-habit-dashboard",
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HabitFormComponent],
   template: `
     <div class="dashboard-container">
       <!-- Header -->
@@ -282,12 +283,27 @@ import { Habit, HabitEntry } from "../../models/habit.model";
         </button>
       </div>
     </div>
+
+    <!-- Habit Form Modal -->
+    @if (showHabitForm()) {
+      <app-habit-form
+        [editingHabit]="editingHabit()"
+        (close)="closeHabitForm()"
+        (habitCreated)="onHabitCreated($event)"
+        (habitUpdated)="onHabitUpdated($event)"
+      >
+      </app-habit-form>
+    }
   `,
   styleUrls: ["./habit-dashboard.component.css"],
 })
 export class HabitDashboardComponent {
   todayDate = new Date();
   circumference = 2 * Math.PI * 26; // radius 26
+
+  // Modal state
+  showHabitForm = signal(false);
+  editingHabit = signal<Habit | null>(null);
 
   activeHabits = this.habitService.activeHabits;
   todayEntries = this.habitService.todayEntries;
@@ -381,17 +397,32 @@ export class HabitDashboardComponent {
   }
 
   createFirstHabit(): void {
-    // This would typically open a modal or navigate to habit creation
-    console.log("Create first habit");
+    this.openHabitForm();
   }
 
-  openHabitForm(): void {
-    // This would typically open a modal or navigate to habit creation
-    console.log("Open habit form");
+  openHabitForm(habit?: Habit): void {
+    this.editingHabit.set(habit || null);
+    this.showHabitForm.set(true);
+  }
+
+  closeHabitForm(): void {
+    this.showHabitForm.set(false);
+    this.editingHabit.set(null);
+  }
+
+  onHabitCreated(habit: Habit): void {
+    // Habit is already created by the service, just close the modal
+    this.closeHabitForm();
+  }
+
+  onHabitUpdated(habit: Habit): void {
+    // Habit is already updated by the service, just close the modal
+    this.closeHabitForm();
   }
 
   openMoodTracker(): void {
     // This would typically open a mood tracking modal
-    console.log("Open mood tracker");
+    // For now, just navigate to reflection page
+    console.log("Open mood tracker - redirecting to reflection");
   }
 }
