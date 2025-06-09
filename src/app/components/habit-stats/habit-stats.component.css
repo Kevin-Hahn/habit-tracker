@@ -251,7 +251,9 @@
 .category-info {
   flex: 1;
   min-width: 0;
+  max-width: 120px;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .category-name {
