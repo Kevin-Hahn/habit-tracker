@@ -7,7 +7,7 @@ import { WeeklyReflection } from "../../models/habit.model";
 
 @Component({
   selector: "app-reflection",
-  standalone: true,
+
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: "./reflection.component.html",
   styleUrls: ["./reflection.component.css"],

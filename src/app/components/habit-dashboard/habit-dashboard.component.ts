@@ -7,7 +7,7 @@ import { HabitCardComponent } from "../habit-card/habit-card.component";
 
 @Component({
   selector: "app-habit-dashboard",
-  standalone: true,
+
   imports: [CommonModule, RouterModule, HabitCardComponent],
   templateUrl: "./habit-dashboard.component.html",
   styleUrls: ["./habit-dashboard.component.css"],

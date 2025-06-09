@@ -7,7 +7,7 @@ import { ReflectionComponent } from "./reflection.component";
 
 @Component({
   selector: "app-reflection-container",
-  standalone: true,
+
   imports: [CommonModule, RouterModule, ReflectionComponent],
   template: `
     <app-reflection

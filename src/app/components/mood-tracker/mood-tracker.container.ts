@@ -1,10 +1,9 @@
-import { Component, signal, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { Component, computed, signal } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { HabitService } from "../../services/habit.service";
 import { StorageService } from "../../services/storage.service";
 import { MoodTrackerComponent } from "./mood-tracker.component";
-import { HabitEntry } from "../../models/habit.model";
 
 interface MoodEntry {
   id: string;
@@ -17,7 +16,7 @@ interface MoodEntry {
 
 @Component({
   selector: "app-mood-tracker-container",
-  standalone: true,
+
   imports: [CommonModule, RouterModule, MoodTrackerComponent],
   template: `
     <app-mood-tracker
@@ -90,7 +89,7 @@ export class MoodTrackerContainerComponent {
         Math.round(
           (energies.reduce((sum, energy) => sum + energy, 0) /
             energies.length) *
-            10,
+          10,
         ) / 10,
       highest: Math.max(...energies),
       lowest: Math.min(...energies),

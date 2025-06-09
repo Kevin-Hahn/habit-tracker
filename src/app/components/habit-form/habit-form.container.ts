@@ -16,7 +16,7 @@ interface HabitFormData {
 
 @Component({
   selector: "app-habit-form-container",
-  standalone: true,
+
   imports: [CommonModule, HabitFormComponent],
   template: `
     <app-habit-form

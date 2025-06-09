@@ -11,7 +11,7 @@ import { HabitDashboardComponent } from "./habit-dashboard.component";
 
 @Component({
   selector: "app-habit-dashboard-container",
-  standalone: true,
+
   imports: [
     CommonModule,
     RouterModule,

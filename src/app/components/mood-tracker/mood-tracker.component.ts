@@ -23,7 +23,7 @@ interface RecentMood {
 
 @Component({
   selector: "app-mood-tracker",
-  standalone: true,
+
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: "./mood-tracker.component.html",
   styleUrls: ["./mood-tracker.component.css"],

@@ -4,7 +4,7 @@ import { Habit, HabitStats } from "../../models/habit.model";
 
 @Component({
   selector: "app-habit-card",
-  standalone: true,
+
   imports: [CommonModule],
   templateUrl: "./habit-card.component.html",
   styleUrls: ["./habit-card.component.css"],

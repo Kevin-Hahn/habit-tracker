@@ -1,5 +1,5 @@
-import { Component, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { Component, computed } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { HabitService } from "../../services/habit.service";
 import { StatisticsService } from "../../services/statistics.service";
@@ -7,7 +7,7 @@ import { HabitStatsComponent } from "./habit-stats.component";
 
 @Component({
   selector: "app-habit-stats-container",
-  standalone: true,
+
   imports: [CommonModule, RouterModule, HabitStatsComponent],
   template: `
     <app-habit-stats
@@ -127,5 +127,5 @@ export class HabitStatsContainerComponent {
   constructor(
     private habitService: HabitService,
     private statisticsService: StatisticsService,
-  ) {}
+  ) { }
 }

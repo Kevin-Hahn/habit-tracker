@@ -29,7 +29,7 @@ interface HeatmapWeek {
 
 @Component({
   selector: "app-habit-stats",
-  standalone: true,
+
   imports: [CommonModule, RouterModule],
   templateUrl: "./habit-stats.component.html",
   styleUrls: ["./habit-stats.component.css"],
