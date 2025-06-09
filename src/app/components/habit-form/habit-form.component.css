@@ -106,6 +106,7 @@
   height: 12px;
   border-radius: 50%;
   flex-shrink: 0;
+  background-color: var(--template-color, var(--accent-primary));
 }
 
 .template-info {
