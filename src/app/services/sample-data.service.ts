@@ -29,7 +29,7 @@ export class SampleDataService {
         description: "30 minutes of physical activity to start the day",
         frequency: { type: "daily" as const },
         category: HABIT_CATEGORIES[0], // 'Health'
-        color: HABIT_COLORS[5], // '#10b981'
+        color: HABIT_COLORS[0], // '#059669'
         tags: ["health", "fitness", "morning"],
         targetCount: 1,
         isActive: true,
@@ -39,7 +39,7 @@ export class SampleDataService {
         description: "Daily reading habit for personal growth",
         frequency: { type: "daily" as const },
         category: HABIT_CATEGORIES[1], // 'Learning'
-        color: HABIT_COLORS[7], // '#3b82f6'
+        color: HABIT_COLORS[1], // '#16a34a'
         tags: ["learning", "books", "growth"],
         targetCount: 1,
         isActive: true,
@@ -49,7 +49,7 @@ export class SampleDataService {
         description: "Stay hydrated throughout the day",
         frequency: { type: "daily" as const },
         category: HABIT_CATEGORIES[0], // 'Health'
-        color: HABIT_COLORS[12], // '#06b6d4'
+        color: HABIT_COLORS[12], // '#0891b2'
         tags: ["health", "hydration"],
         targetCount: 8,
         isActive: true,
@@ -59,7 +59,7 @@ export class SampleDataService {
         description: "Reflect and write down thoughts",
         frequency: { type: "daily" as const },
         category: HABIT_CATEGORIES[2], // 'Personal'
-        color: HABIT_COLORS[2], // '#a78bfa'
+        color: HABIT_COLORS[6], // '#ca8a04'
         tags: ["reflection", "writing", "mindfulness"],
         targetCount: 1,
         isActive: true,
@@ -69,7 +69,7 @@ export class SampleDataService {
         description: "10-15 minutes of mindfulness practice",
         frequency: { type: "daily" as const },
         category: HABIT_CATEGORIES[6], // 'Spiritual'
-        color: HABIT_COLORS[5], // '#f59e0b'
+        color: HABIT_COLORS[7], // '#d97706'
         tags: ["mindfulness", "mental-health", "peace"],
         targetCount: 1,
         isActive: true,
@@ -79,7 +79,7 @@ export class SampleDataService {
         description: "Work on programming skills and projects",
         frequency: { type: "weekly" as const, timesPerWeek: 5 },
         category: HABIT_CATEGORIES[1], // 'Learning'
-        color: HABIT_COLORS[8], // '#8b5cf6'
+        color: HABIT_COLORS[2], // '#22c55e'
         tags: ["coding", "skills", "career"],
         targetCount: 1,
         isActive: true,
@@ -89,7 +89,7 @@ export class SampleDataService {
         description: "Stay connected with family members",
         frequency: { type: "weekly" as const, timesPerWeek: 2 },
         category: HABIT_CATEGORIES[4], // 'Social'
-        color: HABIT_COLORS[9], // '#ec4899'
+        color: HABIT_COLORS[8], // '#ea580c'
         tags: ["family", "relationships", "connection"],
         targetCount: 1,
         isActive: true,
