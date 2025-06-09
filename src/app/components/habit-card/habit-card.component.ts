@@ -10,7 +10,7 @@ import { Habit, HabitStats } from "../../models/habit.model";
     <div class="habit-card" [class.completed]="isCompleted">
       <div class="habit-header">
         <div class="habit-info">
-          <div class="habit-color" [style.background-color]="habit.color"></div>
+          <div class="habit-color" [style.--habit-color]="habit.color"></div>
           <div class="habit-details">
             <h3 class="habit-name">{{ habit.name }}</h3>
             @if (habit.description) {
