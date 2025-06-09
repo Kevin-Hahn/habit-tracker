@@ -65,38 +65,38 @@ h6 {
 
 /* CSS Custom Properties for Theming */
 :root {
-  /* Light theme colors */
-  --light-bg-primary: #ffffff;
-  --light-bg-secondary: #f8fafc;
-  --light-bg-tertiary: #f1f5f9;
-  --light-text-primary: #0f172a;
-  --light-text-secondary: #64748b;
-  --light-border-color: #e2e8f0;
-  --light-shadow: rgba(0, 0, 0, 0.1);
+  /* Light theme colors - Beige with green accents */
+  --light-bg-primary: #faf8f3;
+  --light-bg-secondary: #f5f1e8;
+  --light-bg-tertiary: #ede7d3;
+  --light-text-primary: #3c2e26;
+  --light-text-secondary: #6b5b4f;
+  --light-border-color: #d4c4a8;
+  --light-shadow: rgba(60, 46, 38, 0.1);
 
-  /* Dark theme colors */
-  --dark-bg-primary: #0f172a;
-  --dark-bg-secondary: #1e293b;
-  --dark-bg-tertiary: #334155;
-  --dark-text-primary: #f8fafc;
-  --dark-text-secondary: #94a3b8;
-  --dark-border-color: #334155;
-  --dark-shadow: rgba(0, 0, 0, 0.3);
+  /* Dark theme colors - Dark earth tones with green accents */
+  --dark-bg-primary: #1a1611;
+  --dark-bg-secondary: #2d251e;
+  --dark-bg-tertiary: #3d342a;
+  --dark-text-primary: #f0ede7;
+  --dark-text-secondary: #c4b8a9;
+  --dark-border-color: #4a3f32;
+  --dark-shadow: rgba(0, 0, 0, 0.4);
 
-  /* Accent colors (same for both themes) */
-  --accent-primary: #3b82f6;
-  --accent-hover: #2563eb;
-  --accent-light: #dbeafe;
+  /* Accent colors - Green theme for both modes */
+  --accent-primary: #059669;
+  --accent-hover: #047857;
+  --accent-light: #d1fae5;
 
   /* Success colors */
-  --success-color: #10b981;
-  --success-bg: rgba(16, 185, 129, 0.1);
-  --success-border: rgba(16, 185, 129, 0.3);
+  --success-color: #16a34a;
+  --success-bg: rgba(22, 163, 74, 0.1);
+  --success-border: rgba(22, 163, 74, 0.3);
 
   /* Warning colors */
-  --warning-color: #f59e0b;
-  --warning-bg: rgba(245, 158, 11, 0.1);
-  --warning-border: rgba(245, 158, 11, 0.3);
+  --warning-color: #d97706;
+  --warning-bg: rgba(217, 119, 6, 0.1);
+  --warning-border: rgba(217, 119, 6, 0.3);
 
   /* Error colors */
   --error-color: #ef4444;
@@ -104,17 +104,13 @@ h6 {
   --error-border: rgba(239, 68, 68, 0.3);
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-success: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
-  --gradient-rainbow: linear-gradient(
-    90deg,
-    #ff6b6b 0%,
-    #feca57 16.66%,
-    #48dbfb 33.33%,
-    #ff9ff3 50%,
-    #54a0ff 66.66%,
-    #5f27cd 83.33%,
-    #ff6b6b 100%
+  --gradient-primary: linear-gradient(135deg, #059669 0%, #16a34a 100%);
+  --gradient-success: linear-gradient(135deg, #22c55e 0%, #059669 100%);
+  --gradient-earth: linear-gradient(
+    135deg,
+    #92400e 0%,
+    #a16207 50%,
+    #059669 100%
   );
 
   /* Animation durations */
