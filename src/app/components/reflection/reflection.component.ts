@@ -347,6 +347,7 @@ export class ReflectionComponent {
   @Input() reflectionText!: string;
   @Input() pastReflections!: WeeklyReflection[];
   @Input() currentWeekRange!: string;
+  @Input() saveStatus!: "idle" | "saving" | "saved" | "error";
 
   @Output() updateReflection = new EventEmitter<{
     key: keyof WeeklyReflection;
