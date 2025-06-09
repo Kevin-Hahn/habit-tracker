@@ -1,0 +1,10 @@
+<div class="dialog-backdrop">
+  <div class="dialog-container">
+    <h2 class="dialog-title">{{ title }}</h2>
+    <p class="dialog-text">{{ text }}</p>
+    <div class="dialog-actions">
+      <button class="dialog-cancel" (click)="onCancel()">{{ cancelLabel }}</button>
+      <button class="dialog-accept" (click)="onAccept()">{{ acceptLabel }}</button>
+    </div>
+  </div>
+</div>

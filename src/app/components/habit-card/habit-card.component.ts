@@ -17,6 +17,7 @@ export class HabitCardComponent {
 
   @Output() toggle = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<void>();
 
   handleToggle(): void {
     this.toggle.emit();
@@ -29,5 +30,9 @@ export class HabitCardComponent {
         button.style.transform = "scale(1)";
       }, 150);
     }
+  }
+
+  handleDelete(): void {
+    this.delete.emit();
   }
 }

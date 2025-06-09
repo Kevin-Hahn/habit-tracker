@@ -131,6 +131,7 @@
             [weeklyProgress]="getWeeklyProgress(habit.id)"
             (toggle)="toggleHabit.emit(habit.id)"
             (edit)="openHabitForm.emit(habit)"
+            (delete)="deleteHabit.emit(habit.id)"
           >
           </app-habit-card>
         }

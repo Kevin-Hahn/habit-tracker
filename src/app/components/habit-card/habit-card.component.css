@@ -71,7 +71,7 @@
   line-height: 1.4;
 }
 
-.habit-toggle {
+.habit-toggle, .habit-delete {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -90,6 +90,17 @@
   background: var(--accent-primary);
   color: white;
   transform: scale(1.05);
+}
+
+.habit-delete {
+   margin-left: 0.5rem;
+   color: var(--border-color);
+}
+
+.habit-delete:hover {
+  background: var(--warning-color);
+  border-color: var(--warning-color);
+  color: white;
 }
 
 .habit-toggle.completed {

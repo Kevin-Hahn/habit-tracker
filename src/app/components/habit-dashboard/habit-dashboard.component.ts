@@ -37,6 +37,7 @@ export class HabitDashboardComponent {
   @Output() habitCreated = new EventEmitter<Habit>();
   @Output() habitUpdated = new EventEmitter<Habit>();
   @Output() openMoodTracker = new EventEmitter<void>();
+  @Output() deleteHabit = new EventEmitter<string>();
 
   circumference = PROGRESS_RING_CONFIG.circumference;
 }
