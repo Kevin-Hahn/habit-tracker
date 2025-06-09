@@ -465,5 +465,3 @@
 .habit-toggle.completed {
   animation: completionPulse 0.6s ease-out;
 }
-
-/* Dark mode variables will be defined in global styles */
