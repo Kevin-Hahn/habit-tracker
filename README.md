@@ -150,7 +150,7 @@ src/app/
 
 ## 🛠️ Technologies Used
 
-- **Frontend Framework**: Angular 18+
+- **Frontend Framework**: Angular 20+
 - **Styling**: CSS with custom properties for theming
 - **State Management**: Angular Signals for reactive state
 - **Data Persistence**: Local Storage with service abstraction
@@ -167,27 +167,6 @@ This project demonstrates:
 - **Accessibility First**: ARIA labels, semantic HTML, keyboard navigation
 - **Performance Optimization**: Lazy loading, computed values, minimal re-renders
 - **User Experience**: Smooth animations, instant feedback, intuitive design
-
-## 📈 Future Enhancements
-
-Potential areas for expansion:
-
-- **Data Export**: Export habit data to CSV or PDF
-- **Habit Sharing**: Share habits and progress with friends
-- **Advanced Analytics**: More detailed insights and goal setting
-- **Notifications**: Browser notifications for habit reminders
-- **Cloud Sync**: Synchronize data across multiple devices
-- **Mobile App**: Native mobile application
-
-## 🤝 Contributing
-
-This is a demonstration project showcasing modern Angular development practices. The codebase serves as an excellent reference for:
-
-- Angular component architecture
-- State management patterns
-- CSS theming and responsive design
-- TypeScript best practices
-- Accessibility implementation
 
 ## 📄 License
 
