@@ -159,31 +159,59 @@ export class ReflectionContainerComponent {
   }
 
   saveReflection(): void {
-    const reflection: WeeklyReflection = {
-      id: this.generateId(),
-      week: this.getCurrentWeek(),
-      reflection: this.reflectionText(),
-      mood: this.currentReflection().mood || 3,
-      energy: this.currentReflection().energy || 3,
-      goals: this.currentReflection().goals || [],
-      challenges: this.currentReflection().challenges || [],
-      wins: this.currentReflection().wins || [],
-      createdAt: new Date(),
-    };
+    try {
+      this.saveStatus.set("saving");
 
-    const reflections = this.storageService.getReflections();
-    const existingIndex = reflections.findIndex(
-      (r) => r.week === reflection.week,
-    );
+      const current = this.currentReflection();
+      const reflection: WeeklyReflection = {
+        id: this.generateId(),
+        week: this.getCurrentWeek(),
+        reflection: this.reflectionText(),
+        mood: current.mood || 3,
+        energy: current.energy || 3,
+        goals: current.goals || [],
+        challenges: current.challenges || [],
+        wins: current.wins || [],
+        createdAt: new Date(),
+      };
 
-    if (existingIndex >= 0) {
-      reflections[existingIndex] = reflection;
-    } else {
-      reflections.push(reflection);
+      // Get current reflections
+      const reflections = this.storageService.getReflections();
+      const existingIndex = reflections.findIndex(
+        (r) => r.week === reflection.week,
+      );
+
+      // Update existing or add new
+      if (existingIndex >= 0) {
+        // Keep the original ID and creation date for updates
+        reflection.id = reflections[existingIndex].id;
+        reflection.createdAt = reflections[existingIndex].createdAt;
+        reflections[existingIndex] = reflection;
+      } else {
+        reflections.push(reflection);
+      }
+
+      // Save to storage
+      this.storageService.saveReflections(reflections);
+
+      // Update status and provide feedback
+      this.saveStatus.set("saved");
+
+      // Show success feedback temporarily
+      setTimeout(() => {
+        this.saveStatus.set("idle");
+      }, 2000);
+
+      console.log("Reflection saved successfully!", reflection);
+    } catch (error) {
+      console.error("Error saving reflection:", error);
+      this.saveStatus.set("error");
+
+      // Reset error status after 3 seconds
+      setTimeout(() => {
+        this.saveStatus.set("idle");
+      }, 3000);
     }
-
-    this.storageService.saveReflections(reflections);
-    console.log("Reflection saved successfully!");
   }
 
   private generateId(): string {
