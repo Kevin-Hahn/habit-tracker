@@ -1,12 +1,12 @@
-import { CommonModule } from "@angular/common";
-import { Component, computed, signal } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { WeeklyReflection } from "../../models/habit.model";
-import { StorageService } from "../../services/storage.service";
-import { ReflectionComponent } from "./reflection.component";
+import { CommonModule } from '@angular/common';
+import { Component, computed, signal } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { WeeklyReflection } from '../../models/WeeklyReflection';
+import { StorageService } from '../../services/storage.service';
+import { ReflectionComponent } from './reflection.component';
 
 @Component({
-  selector: "app-reflection-container",
+  selector: 'app-reflection-container',
 
   imports: [CommonModule, RouterModule, ReflectionComponent],
   template: `
@@ -31,8 +31,8 @@ import { ReflectionComponent } from "./reflection.component";
   `,
 })
 export class ReflectionContainerComponent {
-  reflectionText = signal("");
-  saveStatus = signal<"idle" | "saving" | "saved" | "error">("idle");
+  reflectionText = signal('');
+  saveStatus = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   currentReflection = signal<Partial<WeeklyReflection>>({
     mood: 3,
@@ -46,7 +46,7 @@ export class ReflectionContainerComponent {
     const reflections = this.storageService.getReflections();
     return reflections.sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
   });
 
@@ -62,9 +62,7 @@ export class ReflectionContainerComponent {
     );
   });
 
-  constructor(
-    private storageService: StorageService,
-  ) {
+  constructor(private storageService: StorageService) {
     this.loadCurrentWeekReflection();
   }
 
@@ -86,9 +84,9 @@ export class ReflectionContainerComponent {
     const pastDaysOfYear =
       (now.getTime() - firstDayOfYear.getTime()) / 86400000;
     const weekNumber = Math.ceil(
-      (pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7,
+      (pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7
     );
-    return `${year}-W${weekNumber.toString().padStart(2, "0")}`;
+    return `${year}-W${weekNumber.toString().padStart(2, '0')}`;
   }
 
   getCurrentWeekRange(): string {
@@ -101,9 +99,9 @@ export class ReflectionContainerComponent {
     endOfWeek.setDate(startOfWeek.getDate() + 6);
 
     const formatDate = (date: Date) =>
-      date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
+      date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
       });
 
     return `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
@@ -111,7 +109,7 @@ export class ReflectionContainerComponent {
 
   updateReflection<K extends keyof WeeklyReflection>(
     key: K,
-    value: WeeklyReflection[K],
+    value: WeeklyReflection[K]
   ): void {
     this.currentReflection.update((current) => ({
       ...current,
@@ -135,7 +133,7 @@ export class ReflectionContainerComponent {
   removeWin(index: number): void {
     this.currentReflection.update((current) => ({
       ...current,
-      wins: current.wins?.filter((_, i) => i !== index) || [],
+      wins: current.wins?.filter((_, i: number) => i !== index) || [],
     }));
   }
 
@@ -151,7 +149,8 @@ export class ReflectionContainerComponent {
   removeChallenge(index: number): void {
     this.currentReflection.update((current) => ({
       ...current,
-      challenges: current.challenges?.filter((_, i) => i !== index) || [],
+      challenges:
+        current.challenges?.filter((_, i: number) => i !== index) || [],
     }));
   }
 
@@ -167,13 +166,13 @@ export class ReflectionContainerComponent {
   removeGoal(index: number): void {
     this.currentReflection.update((current) => ({
       ...current,
-      goals: current.goals?.filter((_, i) => i !== index) || [],
+      goals: current.goals?.filter((_, i: number) => i !== index) || [],
     }));
   }
 
   saveReflection(): void {
     try {
-      this.saveStatus.set("saving");
+      this.saveStatus.set('saving');
 
       const current = this.currentReflection();
       const reflectionTextValue = this.reflectionText();
@@ -187,15 +186,18 @@ export class ReflectionContainerComponent {
       const reflections = this.storageService.getReflections();
       this.saveOrUpdateReflection(reflections, reflection);
       this.storageService.saveReflections(reflections);
-      this.saveStatus.set("saved");
-      setTimeout(() => this.saveStatus.set("idle"), 2000);
-      console.log("Reflection saved successfully!", reflection);
+      this.saveStatus.set('saved');
+      setTimeout(() => this.saveStatus.set('idle'), 2000);
+      console.log('Reflection saved successfully!', reflection);
     } catch (error) {
       this.handleSaveError(error);
     }
   }
 
-  private hasContent(current: Partial<WeeklyReflection>, reflectionTextValue: string): boolean {
+  private hasContent(
+    current: Partial<WeeklyReflection>,
+    reflectionTextValue: string
+  ): boolean {
     return (
       reflectionTextValue.trim().length > 0 ||
       (!!current.wins && current.wins.length > 0) ||
@@ -205,12 +207,15 @@ export class ReflectionContainerComponent {
   }
 
   private handleEmptyReflection(): void {
-    this.saveStatus.set("error");
-    setTimeout(() => this.saveStatus.set("idle"), 2000);
-    console.warn("Cannot save empty reflection. Please add some content.");
+    this.saveStatus.set('error');
+    setTimeout(() => this.saveStatus.set('idle'), 2000);
+    console.warn('Cannot save empty reflection. Please add some content.');
   }
 
-  private buildReflection(current: Partial<WeeklyReflection>, reflectionTextValue: string): WeeklyReflection {
+  private buildReflection(
+    current: Partial<WeeklyReflection>,
+    reflectionTextValue: string
+  ): WeeklyReflection {
     return {
       id: this.generateId(),
       week: this.getCurrentWeek(),
@@ -224,8 +229,13 @@ export class ReflectionContainerComponent {
     };
   }
 
-  private saveOrUpdateReflection(reflections: WeeklyReflection[], reflection: WeeklyReflection): void {
-    const existingIndex = reflections.findIndex((r) => r.week === reflection.week);
+  private saveOrUpdateReflection(
+    reflections: WeeklyReflection[],
+    reflection: WeeklyReflection
+  ): void {
+    const existingIndex = reflections.findIndex(
+      (r) => r.week === reflection.week
+    );
     if (existingIndex >= 0) {
       reflection.id = reflections[existingIndex].id;
       reflection.createdAt = reflections[existingIndex].createdAt;
@@ -236,9 +246,9 @@ export class ReflectionContainerComponent {
   }
 
   private handleSaveError(error: unknown): void {
-    console.error("Error saving reflection:", error);
-    this.saveStatus.set("error");
-    setTimeout(() => this.saveStatus.set("idle"), 3000);
+    console.error('Error saving reflection:', error);
+    this.saveStatus.set('error');
+    setTimeout(() => this.saveStatus.set('idle'), 3000);
   }
 
   private generateId(): string {

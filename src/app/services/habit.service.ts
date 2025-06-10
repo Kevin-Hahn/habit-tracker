@@ -1,9 +1,11 @@
-import { Injectable, computed, signal } from "@angular/core";
-import { Habit, HabitEntry, HabitStats } from "../models/habit.model";
-import { StorageService } from "./storage.service";
+import { Injectable, computed, signal } from '@angular/core';
+import { Habit } from '../models/Habit';
+import { HabitEntry } from '../models/HabitEntry';
+import { HabitStats } from '../models/HabitStats';
+import { StorageService } from './storage.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class HabitService {
   private habitsSignal = signal<Habit[]>([]);
@@ -13,11 +15,11 @@ export class HabitService {
   entries = this.entriesSignal.asReadonly();
 
   activeHabits = computed(() =>
-    this.habits().filter((habit) => habit.isActive),
+    this.habits().filter((habit) => habit.isActive)
   );
 
   todayEntries = computed(() => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split('T')[0];
     return this.entries().filter((entry) => entry.date === today);
   });
 
@@ -48,7 +50,7 @@ export class HabitService {
   }
 
   // Habit CRUD operations
-  createHabit(habitData: Omit<Habit, "id" | "createdAt">): Habit {
+  createHabit(habitData: Omit<Habit, 'id' | 'createdAt'>): Habit {
     const habit: Habit = {
       ...habitData,
       id: this.generateId(),
@@ -67,7 +69,7 @@ export class HabitService {
   updateHabit(id: string, updates: Partial<Habit>): void {
     const currentHabits = this.habits();
     const updatedHabits = currentHabits.map((habit) =>
-      habit.id === id ? { ...habit, ...updates } : habit,
+      habit.id === id ? { ...habit, ...updates } : habit
     );
 
     this.habitsSignal.set(updatedHabits);
@@ -77,7 +79,7 @@ export class HabitService {
   deleteHabit(id: string): void {
     const updatedHabits = this.habits().filter((habit) => habit.id !== id);
     const updatedEntries = this.entries().filter(
-      (entry) => entry.habitId !== id,
+      (entry) => entry.habitId !== id
     );
 
     this.habitsSignal.set(updatedHabits);
@@ -89,25 +91,25 @@ export class HabitService {
   // Entry operations
   toggleHabitCompletion(
     habitId: string,
-    date: string = new Date().toISOString().split("T")[0],
+    date: string = new Date().toISOString().split('T')[0]
   ): void {
     const currentEntries = this.entries();
     const existingEntry = currentEntries.find(
-      (entry) => entry.habitId === habitId && entry.date === date,
+      (entry) => entry.habitId === habitId && entry.date === date
     );
 
     if (existingEntry) {
       const updatedEntries = currentEntries.map((entry) =>
         entry.id === existingEntry.id
           ? {
-            ...entry,
-            completed: !entry.completed,
-            completedAt: !entry.completed ? new Date() : undefined,
-            count: !entry.completed
-              ? entry.count + 1
-              : Math.max(0, entry.count - 1),
-          }
-          : entry,
+              ...entry,
+              completed: !entry.completed,
+              completedAt: !entry.completed ? new Date() : undefined,
+              count: !entry.completed
+                ? entry.count + 1
+                : Math.max(0, entry.count - 1),
+            }
+          : entry
       );
       this.entriesSignal.set(updatedEntries);
     } else {
@@ -129,7 +131,7 @@ export class HabitService {
   updateEntry(entryId: string, updates: Partial<HabitEntry>): void {
     const currentEntries = this.entries();
     const updatedEntries = currentEntries.map((entry) =>
-      entry.id === entryId ? { ...entry, ...updates } : entry,
+      entry.id === entryId ? { ...entry, ...updates } : entry
     );
 
     this.entriesSignal.set(updatedEntries);
@@ -139,7 +141,7 @@ export class HabitService {
   // Statistics
   getHabitStats(habitId: string): HabitStats {
     const entries = this.entries().filter(
-      (entry) => entry.habitId === habitId && entry.completed,
+      (entry) => entry.habitId === habitId && entry.completed
     );
 
     const currentStreak = this.calculateCurrentStreak(habitId);
@@ -150,14 +152,14 @@ export class HabitService {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const recentEntries = entries.filter(
-      (entry) => new Date(entry.date) >= thirtyDaysAgo,
+      (entry) => new Date(entry.date) >= thirtyDaysAgo
     );
     const completionRate = recentEntries.length / 30;
 
     // Weekly progress (current week)
     const startOfWeek = this.getStartOfWeek();
     const weekEntries = entries.filter(
-      (entry) => new Date(entry.date) >= startOfWeek,
+      (entry) => new Date(entry.date) >= startOfWeek
     );
     const weeklyProgress = weekEntries.length / 7;
 
@@ -165,12 +167,12 @@ export class HabitService {
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
     const monthEntries = entries.filter(
-      (entry) => new Date(entry.date) >= startOfMonth,
+      (entry) => new Date(entry.date) >= startOfMonth
     );
     const daysInMonth = new Date(
       startOfMonth.getFullYear(),
       startOfMonth.getMonth() + 1,
-      0,
+      0
     ).getDate();
     const monthlyProgress = monthEntries.length / daysInMonth;
 
@@ -228,7 +230,7 @@ export class HabitService {
       const currDate = new Date(entries[i].date);
 
       const dayDiff = Math.floor(
-        (currDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24),
+        (currDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24)
       );
 
       if (dayDiff === 1) {
@@ -272,39 +274,39 @@ export class HabitService {
   getHabitTemplates(): Partial<Habit>[] {
     return [
       {
-        name: "Morning Exercise",
-        description: "30 minutes of physical activity",
-        frequency: { type: "daily" },
-        category: "Health",
-        color: "#4ade80",
-        tags: ["health", "fitness"],
+        name: 'Morning Exercise',
+        description: '30 minutes of physical activity',
+        frequency: { type: 'daily' },
+        category: 'Health',
+        color: '#4ade80',
+        tags: ['health', 'fitness'],
         targetCount: 1,
       },
       {
-        name: "Read for 30 min",
-        description: "Daily reading habit",
-        frequency: { type: "daily" },
-        category: "Learning",
-        color: "#60a5fa",
-        tags: ["learning", "books"],
+        name: 'Read for 30 min',
+        description: 'Daily reading habit',
+        frequency: { type: 'daily' },
+        category: 'Learning',
+        color: '#60a5fa',
+        tags: ['learning', 'books'],
         targetCount: 1,
       },
       {
-        name: "Journal",
-        description: "Reflect and write thoughts",
-        frequency: { type: "daily" },
-        category: "Personal",
-        color: "#a78bfa",
-        tags: ["reflection", "writing"],
+        name: 'Journal',
+        description: 'Reflect and write thoughts',
+        frequency: { type: 'daily' },
+        category: 'Personal',
+        color: '#a78bfa',
+        tags: ['reflection', 'writing'],
         targetCount: 1,
       },
       {
-        name: "Drink Water",
-        description: "8 glasses of water",
-        frequency: { type: "daily" },
-        category: "Health",
-        color: "#06b6d4",
-        tags: ["health", "hydration"],
+        name: 'Drink Water',
+        description: '8 glasses of water',
+        frequency: { type: 'daily' },
+        category: 'Health',
+        color: '#06b6d4',
+        tags: ['health', 'hydration'],
         targetCount: 8,
       },
     ];

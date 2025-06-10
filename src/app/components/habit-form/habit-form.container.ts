@@ -1,8 +1,9 @@
-import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output, signal } from "@angular/core";
-import { Habit, HabitFrequency } from "../../models/habit.model";
-import { HabitService } from "../../services/habit.service";
-import { HabitFormComponent } from "./habit-form.component";
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Habit } from '../../models/Habit';
+import { HabitFrequency } from '../../models/HabitFrequency';
+import { HabitService } from '../../services/habit.service';
+import { HabitFormComponent } from './habit-form.component';
 
 interface HabitFormData {
   name: string;
@@ -15,7 +16,7 @@ interface HabitFormData {
 }
 
 @Component({
-  selector: "app-habit-form-container",
+  selector: 'app-habit-form-container',
 
   imports: [CommonModule, HabitFormComponent],
   template: `
@@ -35,7 +36,7 @@ export class HabitFormContainerComponent {
     if (habit) {
       this.formData.set({
         name: habit.name,
-        description: habit.description || "",
+        description: habit.description || '',
         frequency: { ...habit.frequency },
         category: habit.category,
         color: habit.color,
@@ -44,11 +45,11 @@ export class HabitFormContainerComponent {
       });
     } else {
       this.formData.set({
-        name: "",
-        description: "",
-        frequency: { type: "daily" },
-        category: "Health",
-        color: "#4ade80",
+        name: '',
+        description: '',
+        frequency: { type: 'daily' },
+        category: 'Health',
+        color: '#4ade80',
         tags: [],
         targetCount: 1,
       });
@@ -65,11 +66,11 @@ export class HabitFormContainerComponent {
   @Output() habitUpdated = new EventEmitter<Habit>();
 
   formData = signal<HabitFormData>({
-    name: "",
-    description: "",
-    frequency: { type: "daily" },
-    category: "Health",
-    color: "#4ade80",
+    name: '',
+    description: '',
+    frequency: { type: 'daily' },
+    category: 'Health',
+    color: '#4ade80',
     tags: [],
     targetCount: 1,
   });
@@ -82,7 +83,7 @@ export class HabitFormContainerComponent {
     if (this.editingHabit) {
       this.formData.set({
         name: this.editingHabit.name,
-        description: this.editingHabit.description || "",
+        description: this.editingHabit.description || '',
         frequency: { ...this.editingHabit.frequency },
         category: this.editingHabit.category,
         color: this.editingHabit.color,
@@ -103,10 +104,10 @@ export class HabitFormContainerComponent {
     const data = this.formData();
     const hasName = data.name.trim().length > 0;
     const hasValidFrequency =
-      data.frequency.type === "daily" ||
-      (data.frequency.type === "weekly" &&
+      data.frequency.type === 'daily' ||
+      (data.frequency.type === 'weekly' &&
         (data.frequency.timesPerWeek || 0) > 0) ||
-      (data.frequency.type === "custom" &&
+      (data.frequency.type === 'custom' &&
         (data.frequency.daysOfWeek?.length || 0) > 0);
 
     return hasName && hasValidFrequency;

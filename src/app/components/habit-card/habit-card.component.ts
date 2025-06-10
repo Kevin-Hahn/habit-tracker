@@ -1,13 +1,14 @@
-import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Habit, HabitStats } from "../../models/habit.model";
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Habit } from '../../models/Habit';
+import { HabitStats } from '../../models/HabitStats';
 
 @Component({
-  selector: "app-habit-card",
+  selector: 'app-habit-card',
 
   imports: [CommonModule],
-  templateUrl: "./habit-card.component.html",
-  styleUrls: ["./habit-card.component.css"],
+  templateUrl: './habit-card.component.html',
+  styleUrls: ['./habit-card.component.css'],
 })
 export class HabitCardComponent {
   @Input() habit!: Habit;
@@ -22,12 +23,11 @@ export class HabitCardComponent {
   handleToggle(): void {
     this.toggle.emit();
 
-    // Add animation feedback
     const button = event?.target as HTMLButtonElement;
     if (button) {
-      button.style.transform = "scale(0.95)";
+      button.style.transform = 'scale(0.95)';
       setTimeout(() => {
-        button.style.transform = "scale(1)";
+        button.style.transform = 'scale(1)';
       }, 150);
     }
   }

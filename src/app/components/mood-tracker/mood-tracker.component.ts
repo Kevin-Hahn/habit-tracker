@@ -1,8 +1,9 @@
-import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { RouterModule } from "@angular/router";
-import { ENERGY_LEVELS, MOOD_OPTIONS } from "../../constants/habit.constants";
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { ENERGY_LEVELS } from '../../constants/ENERGY_LEVELS';
+import { MOOD_OPTIONS } from '../../constants/MOOD_OPTIONS';
 
 interface MoodStats {
   average: number;
@@ -22,11 +23,11 @@ interface RecentMood {
 }
 
 @Component({
-  selector: "app-mood-tracker",
+  selector: 'app-mood-tracker',
 
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: "./mood-tracker.component.html",
-  styleUrls: ["./mood-tracker.component.css"],
+  templateUrl: './mood-tracker.component.html',
+  styleUrls: ['./mood-tracker.component.css'],
 })
 export class MoodTrackerComponent {
   @Input() todayMood!: number;
@@ -47,11 +48,11 @@ export class MoodTrackerComponent {
 
   getMoodEmoji(mood: number): string {
     const moodData = this.moods.find((m) => m.value === mood);
-    return moodData?.emoji || "😐";
+    return moodData?.emoji || '😐';
   }
 
   getEnergyIcon(energy: number): string {
     const energyData = this.energyLevels.find((e) => e.value === energy);
-    return energyData?.icon || "🔋";
+    return energyData?.icon || '🔋';
   }
 }

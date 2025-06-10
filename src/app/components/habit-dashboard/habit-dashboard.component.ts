@@ -1,16 +1,17 @@
-import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { PROGRESS_RING_CONFIG } from "../../constants/ui.constants";
-import { Habit, HabitStats } from "../../models/habit.model";
-import { HabitCardComponent } from "../habit-card/habit-card.component";
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { PROGRESS_RING_CONFIG } from '../../constants/PROGRESS_RING_CONFIG';
+import { Habit } from '../../models/Habit';
+import { HabitStats } from '../../models/HabitStats';
+import { HabitCardComponent } from '../habit-card/habit-card.component';
 
 @Component({
-  selector: "app-habit-dashboard",
+  selector: 'app-habit-dashboard',
 
   imports: [CommonModule, RouterModule, HabitCardComponent],
-  templateUrl: "./habit-dashboard.component.html",
-  styleUrls: ["./habit-dashboard.component.css"],
+  templateUrl: './habit-dashboard.component.html',
+  styleUrls: ['./habit-dashboard.component.css'],
 })
 export class HabitDashboardComponent {
   @Input() todayDate!: Date;

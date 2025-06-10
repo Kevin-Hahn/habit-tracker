@@ -1,16 +1,17 @@
-import { CommonModule } from "@angular/common";
-import { Component, computed, signal } from "@angular/core";
-import { Router, RouterModule } from "@angular/router";
-import { Habit, HabitEntry } from "../../models/habit.model";
-import { HabitService } from "../../services/habit.service";
-import { StatisticsService } from "../../services/statistics.service";
-import { ThemeService } from "../../services/theme.service";
-import { HabitFormContainerComponent } from "../habit-form/habit-form.container";
-import { QuestionDialogComponent } from "../question-dialog/question-dialog.component";
-import { HabitDashboardComponent } from "./habit-dashboard.component";
+import { CommonModule } from '@angular/common';
+import { Component, computed, signal } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { Habit } from '../../models/Habit';
+import { HabitEntry } from '../../models/HabitEntry';
+import { HabitService } from '../../services/habit.service';
+import { StatisticsService } from '../../services/statistics.service';
+import { ThemeService } from '../../services/theme.service';
+import { HabitFormContainerComponent } from '../habit-form/habit-form.container';
+import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
+import { HabitDashboardComponent } from './habit-dashboard.component';
 
 @Component({
-  selector: "app-habit-dashboard-container",
+  selector: 'app-habit-dashboard-container',
 
   imports: [
     CommonModule,
@@ -46,25 +47,27 @@ import { HabitDashboardComponent } from "./habit-dashboard.component";
 
     <!-- Habit Form Modal -->
     @if (showHabitForm()) {
-      <app-habit-form-container
-        [editingHabit]="editingHabit()"
-        (close)="closeHabitForm()"
-        (habitCreated)="closeHabitForm()"
-        (habitUpdated)="closeHabitForm()"
-      >
-      </app-habit-form-container>
+    <app-habit-form-container
+      [editingHabit]="editingHabit()"
+      (close)="closeHabitForm()"
+      (habitCreated)="closeHabitForm()"
+      (habitUpdated)="closeHabitForm()"
+    >
+    </app-habit-form-container>
     }
 
     <!-- Question Dialog for Delete -->
     @if (habitToDelete()) {
-      <app-question-dialog
-        [title]="'Delete Habit?'"
-        [text]="'Are you sure you want to delete this habit? This action cannot be undone.'"
-        [acceptLabel]="'Delete'"
-        [cancelLabel]="'Cancel'"
-        (accept)="onConfirmDeleteHabit()"
-        (cancel)="onCancelDeleteHabit()"
-      />
+    <app-question-dialog
+      [title]="'Delete Habit?'"
+      [text]="
+        'Are you sure you want to delete this habit? This action cannot be undone.'
+      "
+      [acceptLabel]="'Delete'"
+      [cancelLabel]="'Cancel'"
+      (accept)="onConfirmDeleteHabit()"
+      (cancel)="onCancelDeleteHabit()"
+    />
     }
   `,
 })
@@ -81,7 +84,7 @@ export class HabitDashboardContainerComponent {
     () =>
       this.habitService
         .todayEntries()
-        .filter((entry: HabitEntry) => entry.completed).length,
+        .filter((entry: HabitEntry) => entry.completed).length
   );
 
   totalHabitsToday = computed(() => this.habitService.activeHabits().length);
@@ -99,7 +102,7 @@ export class HabitDashboardContainerComponent {
       .activeHabits()
       .map(
         (habit: Habit) =>
-          this.habitService.getHabitStats(habit.id).longestStreak,
+          this.habitService.getHabitStats(habit.id).longestStreak
       );
     return streaks.length > 0 ? Math.max(...streaks) : 0;
   });
@@ -109,7 +112,7 @@ export class HabitDashboardContainerComponent {
       .activeHabits()
       .filter(
         (habit: Habit) =>
-          this.habitService.getHabitStats(habit.id).currentStreak > 0,
+          this.habitService.getHabitStats(habit.id).currentStreak > 0
       ).length;
   });
 
@@ -125,8 +128,8 @@ export class HabitDashboardContainerComponent {
     public habitService: HabitService,
     public statisticsService: StatisticsService,
     public themeService: ThemeService,
-    private router: Router,
-  ) { }
+    private router: Router
+  ) {}
 
   // Event handlers
   toggleHabit(habitId: string): void {
@@ -144,7 +147,7 @@ export class HabitDashboardContainerComponent {
   }
 
   openMoodTracker(): void {
-    this.router.navigate(["/mood"]);
+    this.router.navigate(['/mood']);
   }
 
   onRequestDeleteHabit(habitId: string): void {
@@ -168,12 +171,11 @@ export class HabitDashboardContainerComponent {
 
   // Helper methods for child component
   isHabitCompleted(habitId: string): boolean {
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split('T')[0];
     const entry = this.habitService
       .todayEntries()
       .find(
-        (entry: HabitEntry) =>
-          entry.habitId === habitId && entry.date === today,
+        (entry: HabitEntry) => entry.habitId === habitId && entry.date === today
       );
     return entry?.completed || false;
   }
@@ -191,7 +193,7 @@ export class HabitDashboardContainerComponent {
     for (let i = 0; i < 7; i++) {
       const date = new Date(startOfWeek);
       date.setDate(startOfWeek.getDate() + i);
-      const dateStr = date.toISOString().split("T")[0];
+      const dateStr = date.toISOString().split('T')[0];
 
       const entry = this.habitService
         .getEntriesForDate(dateStr)
