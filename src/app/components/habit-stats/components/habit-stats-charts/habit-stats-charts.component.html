@@ -1,0 +1,72 @@
+<!-- Charts section for habit stats (trend + category) -->
+<div class="charts-section">
+  <!-- Completion Trend -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h3 class="chart-title">30-Day Completion Trend</h3>
+      <div class="chart-legend">
+        <div class="legend-item">
+          <div class="legend-color trend-line"></div>
+          <span>Completion Rate</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-container">
+      <div class="trend-chart">
+        @for (point of trendData; track point.date; let i = $index) {
+        <div
+          class="trend-point"
+          [style.left.%]="(i / (trendData.length - 1)) * 100"
+          [style.bottom.%]="point.rate * 100"
+          [attr.data-date]="point.date"
+          [attr.data-rate]="(point.rate * 100).toFixed(0) + '%'"
+        ></div>
+        }
+        <svg
+          class="trend-line-svg"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <polyline
+            [attr.points]="trendLinePoints"
+            fill="none"
+            stroke="var(--accent-primary)"
+            stroke-width="2"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Performance -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h3 class="chart-title">Category Performance</h3>
+    </div>
+    <div class="chart-container">
+      <div class="category-chart">
+        @for (category of categoryStats; track category.category) {
+        <div class="category-row">
+          <div class="category-info">
+            <span class="category-name">{{ category.category }}</span>
+            <span class="category-count"
+              >{{ category.totalHabits }} habits</span
+            >
+          </div>
+          <div class="category-progress">
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                [style.width.%]="category.completionRate * 100"
+              ></div>
+            </div>
+            <span class="progress-value"
+              >{{ (category.completionRate * 100).toFixed(0) }}%</span
+            >
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

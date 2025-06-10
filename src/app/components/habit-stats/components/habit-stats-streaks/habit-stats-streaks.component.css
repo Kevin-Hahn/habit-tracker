@@ -1,0 +1,129 @@
+/* Styles for habit-stats-streaks */
+
+/* Streaks section styles */
+.streaks-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.empty-streaks {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-text {
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.streaks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.streak-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.streak-card:hover {
+  border-color: var(--success-color);
+  transform: translateY(-2px);
+}
+
+.streak-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.streak-habit-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.streak-badge {
+  background: var(--success-bg);
+  color: var(--success-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  border: 1px solid var(--success-border);
+}
+
+.streak-number {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.streak-unit {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.streak-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.streak-bar {
+  height: 6px;
+  background: var(--bg-primary);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.streak-fill {
+  height: 100%;
+  background: var(--success-color);
+  transition: width 0.6s ease;
+}
+
+.streak-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.streak-best {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .streaks-section {
+    padding: 1.5rem 1rem;
+  }
+  .streaks-grid {
+    grid-template-columns: 1fr;
+  }
+  .streak-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .streak-badge {
+    align-self: flex-start;
+  }
+}

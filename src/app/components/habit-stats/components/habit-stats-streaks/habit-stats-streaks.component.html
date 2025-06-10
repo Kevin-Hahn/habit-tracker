@@ -1,0 +1,41 @@
+<!-- Streaks section for habit stats -->
+<div class="streaks-section">
+  <div class="section-header">
+    <h2 class="section-title">Current Streaks</h2>
+  </div>
+  @if (streakData.length === 0) {
+  <div class="empty-streaks">
+    <div class="empty-icon">🎯</div>
+    <p class="empty-text">
+      No active streaks yet. Start completing habits to build streaks!
+    </p>
+  </div>
+  } @else {
+  <div class="streaks-grid">
+    @for (streak of streakData; track streak.habitId) {
+    <div class="streak-card">
+      <div class="streak-header">
+        <h4 class="streak-habit-name">{{ streak.habitName }}</h4>
+        <div class="streak-badge">
+          <span class="streak-number">{{ streak.currentStreak }}</span>
+          <span class="streak-unit">days</span>
+        </div>
+      </div>
+      <div class="streak-progress">
+        <div class="streak-bar">
+          <div
+            class="streak-fill"
+            [style.width.%]="
+              (streak.currentStreak / streak.longestStreak) * 100
+            "
+          ></div>
+        </div>
+        <div class="streak-info">
+          <span class="streak-best">Best: {{ streak.longestStreak }} days</span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>
