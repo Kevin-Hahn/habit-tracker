@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
-import { Component, computed, signal } from "@angular/core";
-import { Router, RouterModule } from "@angular/router";
+import { Component, computed, inject, signal } from "@angular/core";
+import { RouterModule } from "@angular/router";
 import { Habit, HabitEntry } from "../../models/habit.model";
 import { HabitService } from "../../services/habit.service";
 import { StatisticsService } from "../../services/statistics.service";
@@ -62,6 +62,10 @@ import { HabitFormContainerComponent } from "./habit-form/habit-form.container";
   `,
 })
 export class HabitDashboardContainerComponent {
+  protected readonly habitService = inject(HabitService);
+  protected readonly statisticsService = inject(StatisticsService);
+  protected readonly themeService = inject(ThemeService);
+
   todayDate = new Date();
 
   // Modal state
@@ -88,13 +92,6 @@ export class HabitDashboardContainerComponent {
   });
 
 
-
-  constructor(
-    public habitService: HabitService,
-    public statisticsService: StatisticsService,
-    public themeService: ThemeService,
-    private router: Router,
-  ) { }
 
   // Event handlers
   toggleHabit(habitId: string): void {
