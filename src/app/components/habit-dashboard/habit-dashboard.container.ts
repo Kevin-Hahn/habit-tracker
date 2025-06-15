@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
-import { Component, computed, inject, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { Habit, HabitEntry } from "../../models/habit.model";
+import { Habit } from "../../models/habit.model";
 import { HabitService } from "../../services/habit.service";
 import { StatisticsService } from "../../services/statistics.service";
 import { ThemeService } from "../../services/theme.service";
@@ -18,23 +18,17 @@ import { HabitFormContainerComponent } from "./habit-form/habit-form.container";
     HabitFormContainerComponent,
     HabitDashboardComponent,
     QuestionDialogComponent,
+
   ],
   template: `
     <app-habit-dashboard
-      [completedToday]="completedToday()"
-      [totalHabitsToday]="totalHabitsToday()"
-      [progressOffset]="progressOffset()"
-      [activeHabits]="habitService.activeHabits()"
-      [isDarkTheme]="themeService.isDark()"
       [showHabitForm]="showHabitForm()"
       [editingHabit]="editingHabit()"
-      (toggleTheme)="themeService.toggleTheme()"
       (toggleHabit)="toggleHabit($event)"
       (openHabitForm)="openHabitForm($event)"
       (closeHabitForm)="closeHabitForm()"
       (deleteHabit)="onRequestDeleteHabit($event)"
-    >
-    </app-habit-dashboard>
+    />
 
     <!-- Habit Form Modal -->
     @if (showHabitForm()) {
@@ -71,26 +65,6 @@ export class HabitDashboardContainerComponent {
   showHabitForm = signal(false);
   editingHabit = signal<Habit | null>(null);
   habitToDelete = signal<string | null>(null);
-
-  // Computed values
-  completedToday = computed(
-    () =>
-      this.habitService
-        .todayEntries()
-        .filter((entry: HabitEntry) => entry.completed).length,
-  );
-
-  totalHabitsToday = computed(() => this.habitService.activeHabits().length);
-
-  progressOffset = computed(() => {
-    const circumference = 2 * Math.PI * 26;
-    const total = this.totalHabitsToday();
-    const completed = this.completedToday();
-    const percentage = total > 0 ? completed / total : 0;
-    return circumference - percentage * circumference;
-  });
-
-
 
   // Event handlers
   toggleHabit(habitId: string): void {
