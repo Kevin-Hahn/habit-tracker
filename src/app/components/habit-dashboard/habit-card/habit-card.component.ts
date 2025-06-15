@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, computed, inject, input, output } from "@angular/core";
-import { Habit, HabitEntry, HabitStats } from "../../models/habit.model";
-import { HabitService } from "../../services/habit.service";
+import { Habit, HabitEntry, HabitStats } from "../../../models/habit.model";
+import { HabitService } from "../../../services/habit.service";
 
 @Component({
   selector: "app-habit-card",

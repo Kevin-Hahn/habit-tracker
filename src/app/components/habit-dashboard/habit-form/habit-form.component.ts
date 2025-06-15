@@ -5,8 +5,8 @@ import {
   HABIT_CATEGORIES,
   HABIT_COLORS,
   WEEK_DAYS,
-} from "../../constants/habit.constants";
-import { Habit, HabitFrequency } from "../../models/habit.model";
+} from "../../../constants/habit.constants";
+import { Habit, HabitFrequency } from "../../../models/habit.model";
 
 interface HabitFormData {
   name: string;

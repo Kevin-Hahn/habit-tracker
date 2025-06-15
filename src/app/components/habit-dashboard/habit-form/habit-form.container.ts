@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output, signal } from "@angular/core";
-import { Habit, HabitFrequency } from "../../models/habit.model";
-import { HabitService } from "../../services/habit.service";
+import { Habit, HabitFrequency } from "../../../models/habit.model";
+import { HabitService } from "../../../services/habit.service";
 import { HabitFormComponent } from "./habit-form.component";
 
 interface HabitFormData {

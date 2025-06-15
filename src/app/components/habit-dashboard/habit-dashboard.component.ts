@@ -3,7 +3,7 @@ import { Component, input, Input, output } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { PROGRESS_RING_CONFIG } from "../../constants/ui.constants";
 import { Habit, HabitStats } from "../../models/habit.model";
-import { HabitCardComponent } from "../habit-card/habit-card.component";
+import { HabitCardComponent } from "./habit-card/habit-card.component";
 import { HabitQuickactionBarComponent } from "./habit-quickaction-bar/habit-quickaction-bar.component";
 import { HabitQuickstatsComponent } from "./habit-quickstats/habit-quickstats.component";
 

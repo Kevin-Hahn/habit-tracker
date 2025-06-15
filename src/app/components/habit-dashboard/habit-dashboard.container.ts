@@ -5,9 +5,9 @@ import { Habit, HabitEntry } from "../../models/habit.model";
 import { HabitService } from "../../services/habit.service";
 import { StatisticsService } from "../../services/statistics.service";
 import { ThemeService } from "../../services/theme.service";
-import { HabitFormContainerComponent } from "../habit-form/habit-form.container";
 import { QuestionDialogComponent } from "../question-dialog/question-dialog.component";
 import { HabitDashboardComponent } from "./habit-dashboard.component";
+import { HabitFormContainerComponent } from "./habit-form/habit-form.container";
 
 @Component({
   selector: "app-habit-dashboard-container",
