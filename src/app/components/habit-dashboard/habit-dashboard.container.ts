@@ -33,7 +33,6 @@ import { HabitFormContainerComponent } from "./habit-form/habit-form.container";
       (toggleHabit)="toggleHabit($event)"
       (openHabitForm)="openHabitForm($event)"
       (closeHabitForm)="closeHabitForm()"
-      (openMoodTracker)="openMoodTracker()"
       (deleteHabit)="onRequestDeleteHabit($event)"
     >
     </app-habit-dashboard>
@@ -110,10 +109,6 @@ export class HabitDashboardContainerComponent {
   closeHabitForm(): void {
     this.showHabitForm.set(false);
     this.editingHabit.set(null);
-  }
-
-  openMoodTracker(): void {
-    this.router.navigate(["/mood"]);
   }
 
   onRequestDeleteHabit(habitId: string): void {
