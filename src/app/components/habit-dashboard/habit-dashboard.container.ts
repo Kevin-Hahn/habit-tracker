@@ -21,7 +21,6 @@ import { HabitFormContainerComponent } from "./habit-form/habit-form.container";
   ],
   template: `
     <app-habit-dashboard
-      [todayDate]="todayDate"
       [completedToday]="completedToday()"
       [totalHabitsToday]="totalHabitsToday()"
       [progressOffset]="progressOffset()"

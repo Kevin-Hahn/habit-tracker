@@ -14,7 +14,6 @@ import { HabitQuickstatsComponent } from "./habit-quickstats/habit-quickstats.co
   styleUrls: ["./habit-dashboard.component.css"],
 })
 export class HabitDashboardComponent {
-  todayDate = input.required<Date>();
   completedToday = input.required<number>();
   totalHabitsToday = input.required<number>();
   progressOffset = input.required<number>();
@@ -35,6 +34,8 @@ export class HabitDashboardComponent {
   habitCreated = output<Habit>();
   habitUpdated = output<Habit>();
   deleteHabit = output<string>();
+
+  today = new Date();
 
   circumference = PROGRESS_RING_CONFIG.circumference;
 }
