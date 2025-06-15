@@ -1,42 +1,61 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Habit, HabitStats } from "../../models/habit.model";
+import { Component, computed, inject, input, output } from "@angular/core";
+import { Habit, HabitEntry, HabitStats } from "../../models/habit.model";
+import { HabitService } from "../../services/habit.service";
 
 @Component({
   selector: "app-habit-card",
-
   imports: [CommonModule],
   templateUrl: "./habit-card.component.html",
   styleUrls: ["./habit-card.component.css"],
 })
 export class HabitCardComponent {
-  @Input() habit!: Habit;
-  @Input() isCompleted!: boolean;
-  @Input() stats!: HabitStats;
-  @Input() weeklyProgress!: number;
+  habitService = inject(HabitService);
+  habit = input.required<Habit>();
 
-  @Output() toggle = new EventEmitter<void>();
-  @Output() edit = new EventEmitter<void>();
-  @Output() delete = new EventEmitter<void>();
+  isCompleted = computed(() => {
+    const habit = this.habit();
+    const today = new Date().toISOString().split("T")[0];
+    const entry = this.habitService
+      .todayEntries()
+      .find(
+        (entry: HabitEntry) =>
+          entry.habitId === habit.id && entry.date === today,
+      );
+    return entry?.completed ?? false;
+  })
 
-  handleToggle(): void {
-    this.toggle.emit();
+  readonly stats = computed((): HabitStats => {
+    const habit = this.habit();
+    return this.habitService.getHabitStats(habit.id);
+  });
 
-    // Add animation feedback
-    const button = event?.target as HTMLButtonElement;
-    if (button) {
-      button.style.transform = "scale(0.95)";
-      setTimeout(() => {
-        button.style.transform = "scale(1)";
-      }, 150);
+
+  readonly weeklyProgress = computed((): number => {
+    const habit = this.habit();
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+
+    let completedThisWeek = 0;
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      const dateStr = date.toISOString().split("T")[0];
+
+      const entry = this.habitService
+        .getEntriesForDate(dateStr)
+        .find((entry: HabitEntry) => entry.habitId === habit.id);
+
+      if (entry?.completed) {
+        completedThisWeek++;
+      }
     }
-  }
 
-  handleDelete(): void {
-    this.delete.emit();
-  }
+    return completedThisWeek;
+  });
 
-  handleEdit(): void {
-    this.edit.emit();
-  }
+  toggle = output();
+  edit = output();
+  delete = output();
 }

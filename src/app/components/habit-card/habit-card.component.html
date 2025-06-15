@@ -1,26 +1,26 @@
-<div class="habit-card" [class.completed]="isCompleted">
+<div class="habit-card" [class.completed]="isCompleted()">
   <div class="habit-header">
     <div class="habit-info">
-      <div class="habit-color" [style.--habit-color]="habit.color"></div>
+      <div class="habit-color" [style.--habit-color]="habit().color"></div>
       <div class="habit-details">
-        <h3 class="habit-name">{{ habit.name }}</h3>
-        @if (habit.description) {
-        <p class="habit-description">{{ habit.description }}</p>
+        <h3 class="habit-name">{{ habit().name }}</h3>
+        @if (habit().description) {
+        <p class="habit-description">{{ habit().description }}</p>
         }
       </div>
     </div>
     <button
       class="habit-toggle"
-      [class.completed]="isCompleted"
-      (click)="handleToggle()"
+      [class.completed]="isCompleted()"
+      (click)="toggle.emit()"
       [attr.aria-label]="
         'Mark ' +
-        habit.name +
+        habit().name +
         ' as ' +
-        (isCompleted ? 'incomplete' : 'complete')
+        (isCompleted() ? 'incomplete' : 'complete')
       "
     >
-      @if (isCompleted) {
+      @if (isCompleted()) {
       <svg
         width="24"
         height="24"
@@ -39,23 +39,23 @@
 
   <div class="habit-stats">
     <div class="habit-stat">
-      <span class="stat-value">{{ stats.currentStreak }}</span>
+      <span class="stat-value">{{ stats().currentStreak }}</span>
       <span class="stat-unit">day streak</span>
     </div>
-    @if (habit.frequency.type === "weekly") {
+    @if (habit().frequency.type === "weekly") {
     <div class="habit-stat">
-      <span class="stat-value">{{ weeklyProgress }}</span>
+      <span class="stat-value">{{ weeklyProgress() }}</span>
       <span class="stat-unit"
-        >/ {{ habit.frequency.timesPerWeek }} this week</span
+        >/ {{ habit().frequency.timesPerWeek }} this week</span
       >
     </div>
     }
   </div>
 
   <div class="habit-bottom">
-    @if (habit.tags && habit.tags.length > 0) {
+    @if (habit().tags && habit().tags.length > 0) {
     <div class="habit-tags">
-      @for (tag of habit.tags; track tag) {
+      @for (tag of habit().tags; track tag) {
       <span class="habit-tag">{{ tag }}</span>
       }
     </div>
@@ -64,7 +64,7 @@
     <div class="habit-actions">
       <button
         class="habit-edit"
-        (click)="handleEdit()"
+        (click)="edit.emit()"
         aria-label="Edit habit"
         title="Edit habit"
       >
@@ -86,7 +86,7 @@
       </button>
       <button
         class="habit-delete"
-        (click)="handleDelete()"
+        (click)="delete.emit()"
         aria-label="Delete habit"
         title="Delete habit"
       >

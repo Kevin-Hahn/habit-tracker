@@ -25,16 +25,10 @@ import { HabitDashboardComponent } from "./habit-dashboard.component";
       [completedToday]="completedToday()"
       [totalHabitsToday]="totalHabitsToday()"
       [progressOffset]="progressOffset()"
-      [longestStreak]="longestStreak()"
-      [currentStreaks]="currentStreaks()"
-      [weeklyCompletion]="weeklyCompletion()"
       [activeHabits]="habitService.activeHabits()"
       [isDarkTheme]="themeService.isDark()"
       [showHabitForm]="showHabitForm()"
       [editingHabit]="editingHabit()"
-      [isHabitCompleted]="isHabitCompleted.bind(this)"
-      [getHabitStats]="getHabitStats.bind(this)"
-      [getWeeklyProgress]="getWeeklyProgress.bind(this)"
       (toggleTheme)="themeService.toggleTheme()"
       (toggleHabit)="toggleHabit($event)"
       (openHabitForm)="openHabitForm($event)"
@@ -94,32 +88,7 @@ export class HabitDashboardContainerComponent {
     return circumference - percentage * circumference;
   });
 
-  longestStreak = computed(() => {
-    const streaks = this.habitService
-      .activeHabits()
-      .map(
-        (habit: Habit) =>
-          this.habitService.getHabitStats(habit.id).longestStreak,
-      );
-    return streaks.length > 0 ? Math.max(...streaks) : 0;
-  });
 
-  currentStreaks = computed(() => {
-    return this.habitService
-      .activeHabits()
-      .filter(
-        (habit: Habit) =>
-          this.habitService.getHabitStats(habit.id).currentStreak > 0,
-      ).length;
-  });
-
-  weeklyCompletion = computed(() => {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
-    const weekStats = this.statisticsService.getWeekStats(startOfWeek);
-    return Math.round(weekStats.completionRate * 100);
-  });
 
   constructor(
     public habitService: HabitService,
@@ -166,42 +135,4 @@ export class HabitDashboardContainerComponent {
     this.habitToDelete.set(null);
   }
 
-  // Helper methods for child component
-  isHabitCompleted(habitId: string): boolean {
-    const today = new Date().toISOString().split("T")[0];
-    const entry = this.habitService
-      .todayEntries()
-      .find(
-        (entry: HabitEntry) =>
-          entry.habitId === habitId && entry.date === today,
-      );
-    return entry?.completed || false;
-  }
-
-  getHabitStats(habitId: string) {
-    return this.habitService.getHabitStats(habitId);
-  }
-
-  getWeeklyProgress(habitId: string): number {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
-
-    let completedThisWeek = 0;
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(startOfWeek);
-      date.setDate(startOfWeek.getDate() + i);
-      const dateStr = date.toISOString().split("T")[0];
-
-      const entry = this.habitService
-        .getEntriesForDate(dateStr)
-        .find((entry: HabitEntry) => entry.habitId === habitId);
-
-      if (entry?.completed) {
-        completedThisWeek++;
-      }
-    }
-
-    return completedThisWeek;
-  }
 }

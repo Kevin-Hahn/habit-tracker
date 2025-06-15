@@ -1,38 +1,13 @@
-import { Injectable, computed, signal } from "@angular/core";
+import { Injectable } from "@angular/core";
+import { DayStats, HeatmapData, WeekStats } from "../models/stats.model";
 import { HabitService } from "./habit.service";
-import { HabitEntry, HabitStats } from "../models/habit.model";
-
-export interface DayStats {
-  date: string;
-  completedHabits: number;
-  totalHabits: number;
-  completionRate: number;
-  mood?: number;
-  energy?: number;
-}
-
-export interface WeekStats {
-  week: string;
-  completedHabits: number;
-  totalPossibleHabits: number;
-  completionRate: number;
-  averageMood?: number;
-  averageEnergy?: number;
-}
-
-export interface HeatmapData {
-  date: string;
-  value: number;
-  level: number; // 0-4 for intensity
-}
 
 @Injectable({
   providedIn: "root",
 })
 export class StatisticsService {
-  constructor(private habitService: HabitService) {}
+  constructor(private habitService: HabitService) { }
 
-  // Daily statistics
   getDayStats(date: string): DayStats {
     const activeHabits = this.habitService.activeHabits();
     const dayEntries = this.habitService.getEntriesForDate(date);
@@ -63,7 +38,6 @@ export class StatisticsService {
     };
   }
 
-  // Weekly statistics
   getWeekStats(startDate: Date): WeekStats {
     const weekDates = this.getWeekDates(startDate);
     const activeHabits = this.habitService.activeHabits();
@@ -102,7 +76,6 @@ export class StatisticsService {
     };
   }
 
-  // Heatmap data for calendar view
   getHeatmapData(startDate: Date, endDate: Date): HeatmapData[] {
     const data: HeatmapData[] = [];
     const currentDate = new Date(startDate);
@@ -132,7 +105,6 @@ export class StatisticsService {
     return data;
   }
 
-  // Streak analytics
   getAllStreaks(): {
     habitId: string;
     habitName: string;
@@ -150,7 +122,6 @@ export class StatisticsService {
     });
   }
 
-  // Completion trends over time
   getCompletionTrend(days: number = 30): { date: string; rate: number }[] {
     const trend: { date: string; rate: number }[] = [];
     const endDate = new Date();
@@ -170,7 +141,6 @@ export class StatisticsService {
     return trend;
   }
 
-  // Category performance
   getCategoryStats(): {
     category: string;
     completionRate: number;
@@ -199,7 +169,6 @@ export class StatisticsService {
     }));
   }
 
-  // Mood and energy correlation
   getMoodEnergyCorrelation(): {
     moodVsCompletion: number;
     energyVsCompletion: number;
@@ -233,7 +202,6 @@ export class StatisticsService {
     return { moodVsCompletion, energyVsCompletion, moodVsEnergy };
   }
 
-  // Personal insights
   getPersonalInsights(): string[] {
     const insights: string[] = [];
     const trends = this.getCompletionTrend(7);
@@ -325,7 +293,7 @@ export class StatisticsService {
       ];
       insights.push(
         motivationalInsights[
-          Math.floor(Math.random() * motivationalInsights.length)
+        Math.floor(Math.random() * motivationalInsights.length)
         ],
       );
     }
