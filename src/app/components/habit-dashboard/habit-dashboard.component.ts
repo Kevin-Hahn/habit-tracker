@@ -4,12 +4,12 @@ import { RouterModule } from "@angular/router";
 import { PROGRESS_RING_CONFIG } from "../../constants/ui.constants";
 import { Habit, HabitStats } from "../../models/habit.model";
 import { HabitCardComponent } from "../habit-card/habit-card.component";
-import { HabitQuickstatsComponent } from "../habit-quickstats/habit-quickstats.component";
+import { HabitQuickactionBarComponent } from "./habit-quickaction-bar/habit-quickaction-bar.component";
+import { HabitQuickstatsComponent } from "./habit-quickstats/habit-quickstats.component";
 
 @Component({
   selector: "app-habit-dashboard",
-
-  imports: [CommonModule, RouterModule, HabitCardComponent, HabitQuickstatsComponent],
+  imports: [CommonModule, RouterModule, HabitCardComponent, HabitQuickstatsComponent, HabitQuickactionBarComponent],
   templateUrl: "./habit-dashboard.component.html",
   styleUrls: ["./habit-dashboard.component.css"],
 })
@@ -34,7 +34,6 @@ export class HabitDashboardComponent {
   closeHabitForm = output<void>();
   habitCreated = output<Habit>();
   habitUpdated = output<Habit>();
-  openMoodTracker = output<void>();
   deleteHabit = output<string>();
 
   circumference = PROGRESS_RING_CONFIG.circumference;

@@ -1,7 +1,7 @@
 import { Component, computed, inject } from "@angular/core";
-import { Habit } from "../../models/habit.model";
-import { HabitService } from "../../services/habit.service";
-import { StatisticsService } from "../../services/statistics.service";
+import { Habit } from "../../../models/habit.model";
+import { HabitService } from "../../../services/habit.service";
+import { StatisticsService } from "../../../services/statistics.service";
 
 @Component({
     selector: "app-habit-quickstats",
