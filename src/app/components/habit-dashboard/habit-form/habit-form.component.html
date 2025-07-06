@@ -23,6 +23,35 @@
     </div>
 
     <form class="habit-form" (ngSubmit)="submit.emit()">
+      <!-- Quick Templates -->
+      @if (!editingHabit && templates && templates.length > 0) {
+      <div class="form-section">
+        <label class="section-label">Quick Start</label>
+        <p>Choose a template as a reference.</p>
+        <br />
+        <div class="templates-grid">
+          @for (template of templates; track template.name) {
+          <button
+            type="button"
+            class="template-card"
+            (click)="applyTemplate(template)"
+          >
+            <div
+              class="template-color"
+              [style.--template-color]="template.color"
+            ></div>
+            <div class="template-info">
+              <div class="template-name">{{ template.name }}</div>
+              <div class="template-category">
+                {{ template.category }}
+              </div>
+            </div>
+          </button>
+          }
+        </div>
+      </div>
+      }
+
       <div class="form-columns">
         <div class="form-left">
           <!-- Basic Info -->
@@ -94,33 +123,6 @@
           </div>
         </div>
         <div class="form-right">
-          <!-- Quick Templates -->
-          @if (!editingHabit && templates && templates.length > 0) {
-          <div class="form-section">
-            <label class="section-label">Quick Start</label>
-            <div class="templates-grid">
-              @for (template of templates; track template.name) {
-              <button
-                type="button"
-                class="template-card"
-                (click)="applyTemplate(template)"
-              >
-                <div
-                  class="template-color"
-                  [style.--template-color]="template.color"
-                ></div>
-                <div class="template-info">
-                  <div class="template-name">{{ template.name }}</div>
-                  <div class="template-category">
-                    {{ template.category }}
-                  </div>
-                </div>
-              </button>
-              }
-            </div>
-          </div>
-          }
-
           <!-- Frequency -->
           <div class="form-section">
             <label class="section-label">Frequency</label>
