@@ -1,6 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, computed, inject, input, output } from "@angular/core";
-import { Habit, HabitEntry, HabitStats } from "../../../models/habit.model";
+import type { Habit } from "../../../models/Habit";
+import type { HabitEntry } from "../../../models/HabitEntry";
+import type { HabitStats } from "../../../models/HabitStats";
 import { HabitService } from "../../../services/habit.service";
 
 @Component({

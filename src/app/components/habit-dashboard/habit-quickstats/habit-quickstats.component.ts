@@ -1,5 +1,5 @@
 import { Component, computed, inject } from "@angular/core";
-import { Habit } from "../../../models/habit.model";
+import type { Habit } from "../../../models/Habit";
 import { HabitService } from "../../../services/habit.service";
 import { StatisticsService } from "../../../services/statistics.service";
 

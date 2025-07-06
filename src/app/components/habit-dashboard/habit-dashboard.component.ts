@@ -5,12 +5,14 @@ import { PROGRESS_RING_CONFIG } from '../../constants/PROGRESS_RING_CONFIG';
 import type { Habit } from '../../models/Habit';
 import type { HabitEntry } from '../../models/HabitEntry';
 import { HabitService } from '../../services/habit.service';
-import { HabitCardComponent } from '../habit-card/habit-card.component';
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
+import { HabitCardComponent } from './habit-card/habit-card.component';
+import { HabitQuickactionBarComponent } from './habit-quickaction-bar/habit-quickaction-bar.component';
+import { HabitQuickstatsComponent } from './habit-quickstats/habit-quickstats.component';
 
 @Component({
   selector: 'app-habit-dashboard',
-
-  imports: [CommonModule, RouterModule, HabitCardComponent],
+  imports: [CommonModule, RouterModule, HabitCardComponent, ThemeToggleComponent, HabitQuickstatsComponent, HabitQuickactionBarComponent],
   templateUrl: './habit-dashboard.component.html',
   styleUrls: ['./habit-dashboard.component.css'],
 })
