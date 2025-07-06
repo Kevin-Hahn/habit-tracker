@@ -107,7 +107,8 @@
   color: white;
 }
 
-.habit-edit:hover {
+.habit-edit:hover,
+.habit-calendar:hover {
   background: var(--accent-primary);
   border-color: var(--accent-primary);
   color: white;
