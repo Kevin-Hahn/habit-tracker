@@ -22,15 +22,12 @@
   font-size: 2rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #3f6653;
 }
 
 .header-left .dashboard-subtitle {
   color: var(--text-secondary);
-  margin: 0;
+  margin: 0 0 0 10px;
   font-size: 0.95rem;
 }
 
@@ -38,6 +35,11 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.header-logo-text {
+  display: flex;
+  align-items: end;
 }
 
 .completion-circle {
@@ -320,6 +322,7 @@
 
   .header-left .dashboard-title {
     font-size: 1.75rem;
+    color: #3f6653;
   }
 }
 
