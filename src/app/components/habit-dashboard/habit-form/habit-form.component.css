@@ -18,7 +18,8 @@
   border: 1px solid var(--border-color);
   border-radius: 20px;
   width: 100%;
-  max-width: 600px;
+  min-width: 50vw;
+  max-width: 75vw;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
@@ -179,6 +180,7 @@
   border-radius: 12px;
   padding: 0.25rem;
   margin-bottom: 1rem;
+  gap: 4px;
 }
 
 .frequency-tab {

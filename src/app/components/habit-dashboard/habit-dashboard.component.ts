@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, computed, inject, input, Input, output } from "@angular/core";
+import { Component, computed, inject, output } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { PROGRESS_RING_CONFIG } from "../../constants/ui.constants";
-import { Habit, HabitEntry, HabitStats } from "../../models/habit.model";
+import { Habit, HabitEntry } from "../../models/habit.model";
 import { HabitService } from "../../services/habit.service";
 import { ThemeToggleComponent } from "../theme-toggle/theme-toggle.component";
 import { HabitCardComponent } from "./habit-card/habit-card.component";
@@ -18,20 +18,9 @@ import { HabitQuickstatsComponent } from "./habit-quickstats/habit-quickstats.co
 export class HabitDashboardComponent {
   private readonly habitService = inject(HabitService);
 
-  showHabitForm = input.required<boolean>();
-  editingHabit = input.required<Habit | null>();
-
-  // Function inputs for complex logic
-  @Input() isHabitCompleted!: (habitId: string) => boolean;
-  @Input() getHabitStats!: (habitId: string) => HabitStats;
-  @Input() getWeeklyProgress!: (habitId: string) => number;
-
-  toggleTheme = output<void>();
   toggleHabit = output<string>();
   openHabitForm = output<Habit | undefined>();
   closeHabitForm = output<void>();
-  habitCreated = output<Habit>();
-  habitUpdated = output<Habit>();
   deleteHabit = output<string>();
 
   today = new Date();

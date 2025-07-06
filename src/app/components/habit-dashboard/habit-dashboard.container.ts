@@ -22,8 +22,6 @@ import { HabitFormContainerComponent } from "./habit-form/habit-form.container";
   ],
   template: `
     <app-habit-dashboard
-      [showHabitForm]="showHabitForm()"
-      [editingHabit]="editingHabit()"
       (toggleHabit)="toggleHabit($event)"
       (openHabitForm)="openHabitForm($event)"
       (closeHabitForm)="closeHabitForm()"
@@ -33,10 +31,10 @@ import { HabitFormContainerComponent } from "./habit-form/habit-form.container";
     <!-- Habit Form Modal -->
     @if (showHabitForm()) {
       <app-habit-form-container
-        [editingHabit]="editingHabit()"
         (close)="closeHabitForm()"
         (habitCreated)="closeHabitForm()"
         (habitUpdated)="closeHabitForm()"
+        [editingHabit]="editingHabit()"
       >
       </app-habit-form-container>
     }

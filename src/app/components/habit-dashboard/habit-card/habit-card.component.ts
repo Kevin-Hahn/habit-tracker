@@ -13,6 +13,10 @@ export class HabitCardComponent {
   habitService = inject(HabitService);
   habit = input.required<Habit>();
 
+  toggle = output();
+  edit = output();
+  delete = output();
+
   isCompleted = computed(() => {
     const habit = this.habit();
     const today = new Date().toISOString().split("T")[0];
@@ -29,7 +33,6 @@ export class HabitCardComponent {
     const habit = this.habit();
     return this.habitService.getHabitStats(habit.id);
   });
-
 
   readonly weeklyProgress = computed((): number => {
     const habit = this.habit();
@@ -54,8 +57,4 @@ export class HabitCardComponent {
 
     return completedThisWeek;
   });
-
-  toggle = output();
-  edit = output();
-  delete = output();
 }
