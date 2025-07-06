@@ -2,7 +2,7 @@
   <header>
     <button (click)="prevMonth()">&lt;</button>
     <span>{{
-      selectedMonth().toLocaleString("default", {
+      selectedMonth().toLocaleString("en-US", {
         month: "long",
         year: "numeric"
       })
