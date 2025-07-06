@@ -1,0 +1,46 @@
+.dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+.dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg-secondary, #fff);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  z-index: 1001;
+  min-width: 320px;
+}
+.close-btn {
+  margin-top: 1rem;
+  display: block;
+  margin-left: auto;
+  background: var(--accent-primary, #4caf50);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+}
+
+.habit-calender {
+  margin: 1rem;
+}
+
+.habit-correction-text {
+  margin: 1rem 0 2rem 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #666);
+}
+
+.dialog-streak {
+  color: var(--text-secondary, #666);
+}

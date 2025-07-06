@@ -1,0 +1,36 @@
+.calendar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 2rem);
+  gap: 0.5rem;
+}
+.day {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: none;
+  background: #eee;
+  cursor: pointer !important;
+}
+.day.done {
+  background: #4caf50;
+  color: white;
+}
+.day.future {
+  background: #f3f3f3;
+  color: #bbb;
+  opacity: 0.6;
+}
+.day:disabled {
+  cursor: pointer !important;
+}

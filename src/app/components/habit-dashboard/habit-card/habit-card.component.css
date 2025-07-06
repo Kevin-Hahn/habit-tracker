@@ -73,7 +73,8 @@
 
 .habit-toggle,
 .habit-delete,
-.habit-edit {
+.habit-edit,
+.habit-calendar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -95,7 +96,8 @@
 }
 
 .habit-delete,
-.habit-edit {
+.habit-edit,
+.habit-calendar {
   color: var(--border-color);
 }
 

@@ -1,0 +1,25 @@
+<section class="calendar">
+  <header>
+    <button (click)="prevMonth()">&lt;</button>
+    <span>{{
+      selectedMonth().toLocaleString("default", {
+        month: "long",
+        year: "numeric"
+      })
+    }}</span>
+    <button (click)="nextMonth()">&gt;</button>
+  </header>
+  <div class="days">
+    @for (day of daysInMonth(); track day) {
+    <button
+      class="day"
+      [class.done]="isDone(day)"
+      [class.future]="isFuture(day)"
+      (click)="onMarkToggle(day)"
+      [disabled]="isFuture(day)"
+    >
+      {{ day.getDate() }}
+    </button>
+    }
+  </div>
+</section>

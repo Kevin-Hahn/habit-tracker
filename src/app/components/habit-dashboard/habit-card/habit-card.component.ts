@@ -1,13 +1,14 @@
 import { CommonModule } from "@angular/common";
-import { Component, computed, inject, input, output } from "@angular/core";
+import { Component, computed, inject, input, output, signal } from "@angular/core";
 import type { Habit } from "../../../models/Habit";
 import type { HabitEntry } from "../../../models/HabitEntry";
 import type { HabitStats } from "../../../models/HabitStats";
 import { HabitService } from "../../../services/habit.service";
+import { HabitCalendarDialogContainer } from './habit-calendar-dialog.container';
 
 @Component({
   selector: "app-habit-card",
-  imports: [CommonModule],
+  imports: [CommonModule, HabitCalendarDialogContainer],
   templateUrl: "./habit-card.component.html",
   styleUrls: ["./habit-card.component.css"],
 })
@@ -18,6 +19,8 @@ export class HabitCardComponent {
   toggle = output();
   edit = output();
   delete = output();
+
+  showCalendarDialog = signal(false);
 
   isCompleted = computed(() => {
     const habit = this.habit();
@@ -59,4 +62,14 @@ export class HabitCardComponent {
 
     return completedThisWeek;
   });
+
+  get completedDates() {
+    return this.habitService.entries().filter(e => e.habitId === this.habit().id && e.completed).map(e => e.date);
+  }
+
+  openCalendarDialog = () => this.showCalendarDialog.set(true);
+  closeCalendarDialog = () => this.showCalendarDialog.set(false);
+  onMarkDone = (date: string) => {
+    this.habitService.toggleHabitCompletion(this.habit().id, date);
+  };
 }
