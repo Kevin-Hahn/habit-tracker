@@ -4,8 +4,10 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.5); /* Match edit form overlay */
   z-index: 1000;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 .dialog-content {
   position: fixed;
@@ -18,6 +20,18 @@
   padding: 2rem;
   z-index: 1001;
   min-width: 320px;
+  animation: formSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes formSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px) translate(-50%, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0) translate(-50%, -50%);
+  }
 }
 .close-btn {
   margin-top: 1rem;
