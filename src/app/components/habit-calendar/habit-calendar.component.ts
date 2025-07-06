@@ -30,7 +30,9 @@ export class HabitCalendarComponent {
     readonly isFuture = (date: Date) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        return date > today;
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        return d.getTime() > today.getTime();
     };
 
     readonly markDone = output<string>();
