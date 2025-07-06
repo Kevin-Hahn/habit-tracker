@@ -23,12 +23,83 @@
     </div>
 
     <form class="habit-form" (ngSubmit)="submit.emit()">
-      <!-- Quick Templates -->
-      @if (!editingHabit && templates && templates.length > 0) {
-        <div class="form-section">
-          <label class="section-label">Quick Start</label>
-          <div class="templates-grid">
-            @for (template of templates; track template.name) {
+      <div class="form-columns">
+        <div class="form-left">
+          <!-- Basic Info -->
+          <div class="form-section">
+            <label class="section-label">Basic Information</label>
+            <div class="form-group">
+              <label for="habit-name" class="form-label">Habit Name *</label>
+              <input
+                id="habit-name"
+                type="text"
+                class="form-input"
+                [ngModel]="formData.name"
+                (ngModelChange)="updateField('name', $event)"
+                name="name"
+                placeholder="e.g., Morning Exercise"
+                required
+                maxlength="50"
+              />
+            </div>
+            <div class="form-group">
+              <label for="habit-description" class="form-label"
+                >Description</label
+              >
+              <textarea
+                id="habit-description"
+                class="form-textarea"
+                [ngModel]="formData.description"
+                (ngModelChange)="updateField('description', $event)"
+                name="description"
+                placeholder="Optional details about your habit..."
+                rows="3"
+                maxlength="200"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Category & Color -->
+          <div class="form-section">
+            <label class="section-label">Category & Color</label>
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <select
+                  id="habit-category"
+                  class="form-select"
+                  [ngModel]="formData.category"
+                  (ngModelChange)="updateField('category', $event)"
+                  name="category"
+                >
+                  @for (category of categories; track category) {
+                  <option [value]="category">{{ category }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-group">
+                <div class="color-picker">
+                  @for (color of colors; track color) {
+                  <button
+                    type="button"
+                    class="color-option"
+                    [class.selected]="formData.color === color"
+                    [style.--color-value]="color"
+                    (click)="updateField('color', color)"
+                    [attr.aria-label]="'Select color ' + color"
+                  ></button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-right">
+          <!-- Quick Templates -->
+          @if (!editingHabit && templates && templates.length > 0) {
+          <div class="form-section">
+            <label class="section-label">Quick Start</label>
+            <div class="templates-grid">
+              @for (template of templates; track template.name) {
               <button
                 type="button"
                 class="template-card"
@@ -45,118 +116,109 @@
                   </div>
                 </div>
               </button>
-            }
-          </div>
-        </div>
-      }
-
-      <!-- Basic Info -->
-      <div class="form-section">
-        <label class="section-label">Basic Information</label>
-
-        <div class="form-group">
-          <label for="habit-name" class="form-label">Habit Name *</label>
-          <input
-            id="habit-name"
-            type="text"
-            class="form-input"
-            [ngModel]="formData.name"
-            (ngModelChange)="updateField('name', $event)"
-            name="name"
-            placeholder="e.g., Morning Exercise"
-            required
-            maxlength="50"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="habit-description" class="form-label"
-            >Description</label
-          >
-          <textarea
-            id="habit-description"
-            class="form-textarea"
-            [ngModel]="formData.description"
-            (ngModelChange)="updateField('description', $event)"
-            name="description"
-            placeholder="Optional details about your habit..."
-            rows="3"
-            maxlength="200"
-          ></textarea>
-        </div>
-      </div>
-
-      <!-- Frequency -->
-      <div class="form-section">
-        <label class="section-label">Frequency</label>
-
-        <div class="frequency-tabs">
-          <button
-            type="button"
-            class="frequency-tab"
-            [class.active]="formData.frequency.type === 'daily'"
-            (click)="setFrequencyType('daily')"
-          >
-            Daily
-          </button>
-          <button
-            type="button"
-            class="frequency-tab"
-            [class.active]="formData.frequency.type === 'weekly'"
-            (click)="setFrequencyType('weekly')"
-          >
-            Weekly
-          </button>
-          <button
-            type="button"
-            class="frequency-tab"
-            [class.active]="formData.frequency.type === 'custom'"
-            (click)="setFrequencyType('custom')"
-          >
-            Custom
-          </button>
-        </div>
-
-        @if (formData.frequency.type === "weekly") {
-          <div class="form-group">
-            <label class="form-label">Times per week</label>
-            <div class="number-input-container">
-              <button
-                type="button"
-                class="number-button"
-                (click)="adjustTimesPerWeek(-1)"
-                [disabled]="(formData.frequency.timesPerWeek || 1) <= 1"
-              >
-                -
-              </button>
-              <input
-                type="number"
-                class="number-input"
-                [ngModel]="formData.frequency.timesPerWeek"
-                (ngModelChange)="
-                  updateFrequencyField('timesPerWeek', $event)
-                "
-                name="timesPerWeek"
-                min="1"
-                max="7"
-              />
-              <button
-                type="button"
-                class="number-button"
-                (click)="adjustTimesPerWeek(1)"
-                [disabled]="(formData.frequency.timesPerWeek || 1) >= 7"
-              >
-                +
-              </button>
+              }
             </div>
           </div>
-        }
+          }
 
-        @if (formData.frequency.type === "custom") {
-          <div class="form-group">
-            <label class="form-label">Select days</label>
-            <div class="days-grid">
-              @for (day of weekDays; track day.value) {
+          <!-- Frequency -->
+          <div class="form-section">
+            <label class="section-label">Frequency</label>
+            <div class="frequency-tabs">
+              <button
+                type="button"
+                class="frequency-tab"
+                [class.active]="formData.frequency.type === 'daily'"
+                (click)="setFrequencyType('daily')"
+              >
+                Daily
+              </button>
+              <button
+                type="button"
+                class="frequency-tab"
+                [class.active]="formData.frequency.type === 'weekly'"
+                (click)="setFrequencyType('weekly')"
+              >
+                Weekly
+              </button>
+              <button
+                type="button"
+                class="frequency-tab"
+                [class.active]="formData.frequency.type === 'custom'"
+                (click)="setFrequencyType('custom')"
+              >
+                Custom
+              </button>
+            </div>
+            @if (formData.frequency.type === "daily") {
+            <div class="form-section">
+              <div class="form-group">
+                <label class="form-label">Times a day</label>
+                <div class="number-input-container">
+                  <button
+                    type="button"
+                    class="number-button"
+                    (click)="adjustTargetCount(-1)"
+                    [disabled]="formData.targetCount <= 1"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    class="number-input"
+                    [ngModel]="formData.targetCount"
+                    (ngModelChange)="updateField('targetCount', $event)"
+                    name="targetCount"
+                    min="1"
+                    max="10"
+                  />
+                  <button
+                    type="button"
+                    class="number-button"
+                    (click)="adjustTargetCount(1)"
+                    [disabled]="formData.targetCount >= 10"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+            } @if (formData.frequency.type === "weekly") {
+            <div class="form-group">
+              <label class="form-label">Times per week</label>
+              <div class="number-input-container">
+                <button
+                  type="button"
+                  class="number-button"
+                  (click)="adjustTimesPerWeek(-1)"
+                  [disabled]="(formData.frequency.timesPerWeek || 1) <= 1"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  class="number-input"
+                  [ngModel]="formData.frequency.timesPerWeek"
+                  (ngModelChange)="updateFrequencyField('timesPerWeek', $event)"
+                  name="timesPerWeek"
+                  min="1"
+                  max="7"
+                />
+                <button
+                  type="button"
+                  class="number-button"
+                  (click)="adjustTimesPerWeek(1)"
+                  [disabled]="(formData.frequency.timesPerWeek || 1) >= 7"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            } @if (formData.frequency.type === "custom") {
+            <div class="form-group">
+              <label class="form-label">Select days</label>
+              <div class="days-grid">
+                @for (day of weekDays; track day.value) {
                 <button
                   type="button"
                   class="day-button"
@@ -165,102 +227,26 @@
                 >
                   {{ day.short }}
                 </button>
-              }
+                }
+              </div>
             </div>
-          </div>
-        }
-      </div>
-
-      <!-- Category & Color -->
-      <div class="form-section">
-        <label class="section-label">Category & Color</label>
-
-        <div class="form-row">
-          <div class="form-group flex-1">
-            <label for="habit-category" class="form-label">Category</label>
-            <select
-              id="habit-category"
-              class="form-select"
-              [ngModel]="formData.category"
-              (ngModelChange)="updateField('category', $event)"
-              name="category"
-            >
-              @for (category of categories; track category) {
-                <option [value]="category">{{ category }}</option>
-              }
-            </select>
+            }
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Color</label>
-            <div class="color-picker">
-              @for (color of colors; track color) {
-                <button
-                  type="button"
-                  class="color-option"
-                  [class.selected]="formData.color === color"
-                  [style.--color-value]="color"
-                  (click)="updateField('color', color)"
-                  [attr.aria-label]="'Select color ' + color"
-                ></button>
-              }
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Target Count -->
-      @if (formData.frequency.type === "daily") {
-        <div class="form-section">
-          <label class="section-label">Target Count</label>
-          <div class="form-group">
-            <label class="form-label">How many times per day?</label>
-            <div class="number-input-container">
-              <button
-                type="button"
-                class="number-button"
-                (click)="adjustTargetCount(-1)"
-                [disabled]="formData.targetCount <= 1"
-              >
-                -
-              </button>
+          <!-- Tags -->
+          <div class="form-section">
+            <label class="section-label">Tags</label>
+            <div class="form-group">
               <input
-                type="number"
-                class="number-input"
-                [ngModel]="formData.targetCount"
-                (ngModelChange)="updateField('targetCount', $event)"
-                name="targetCount"
-                min="1"
-                max="10"
+                type="text"
+                class="form-input"
+                placeholder="Add a tag and press Enter"
+                (keydown.enter)="addTag($event)"
+                #tagInput
               />
-              <button
-                type="button"
-                class="number-button"
-                (click)="adjustTargetCount(1)"
-                [disabled]="formData.targetCount >= 10"
-              >
-                +
-              </button>
-            </div>
-          </div>
-        </div>
-      }
-
-      <!-- Tags -->
-      <div class="form-section">
-        <label class="section-label">Tags</label>
-        <div class="form-group">
-          <input
-            type="text"
-            class="form-input"
-            placeholder="Add a tag and press Enter"
-            (keydown.enter)="addTag($event)"
-            #tagInput
-          />
-
-          @if (formData.tags.length > 0) {
-            <div class="tags-list">
-              @for (tag of formData.tags; track tag; let i = $index) {
+              @if (formData.tags.length > 0) {
+              <div class="tags-list">
+                @for (tag of formData.tags; track tag; let i = $index) {
                 <span class="tag">
                   {{ tag }}
                   <button
@@ -272,19 +258,16 @@
                     ×
                   </button>
                 </span>
+                }
+              </div>
               }
             </div>
-          }
+          </div>
         </div>
       </div>
-
       <!-- Form Actions -->
-      <div class="form-actions">
-        <button
-          type="button"
-          class="button-secondary"
-          (click)="close.emit()"
-        >
+      <div class="form-actions form-actions-bottom">
+        <button type="button" class="button-secondary" (click)="close.emit()">
           Cancel
         </button>
         <button

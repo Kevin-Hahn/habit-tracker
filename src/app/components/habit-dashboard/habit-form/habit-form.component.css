@@ -25,11 +25,17 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
 
+.form-section,
+.form-left,
+.form-right {
+  width: 100%;
+}
+
 .form-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
+  padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-primary);
   border-radius: 20px 20px 0 0;
@@ -62,82 +68,54 @@
 }
 
 .habit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: stretch;
   padding: 2rem;
 }
 
-.form-section {
-  margin-bottom: 2rem;
-}
-
-.section-label {
-  display: block;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
-}
-
-.templates-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.template-card {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 1rem;
-  cursor: pointer;
+.form-columns {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  transition: all 0.2s ease;
-  text-align: left;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
 }
 
-.template-card:hover {
-  border-color: var(--accent-primary);
-  background: var(--bg-tertiary);
+@media (max-width: 1100px) {
+  .form-columns {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
-.template-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background-color: var(--template-color, var(--accent-primary));
+@media (max-width: 768px) {
+  .habit-form {
+    padding: 1.5rem;
+  }
+  .form-columns {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
-.template-info {
-  flex: 1;
-}
-
-.template-name {
-  font-weight: 600;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
-}
-
-.template-category {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-}
-
+/* Reduce vertical spacing for compactness */
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.form-row {
-  display: flex;
-  gap: 1rem;
-  align-items: end;
+.form-header {
+  padding: 1.25rem 1.5rem;
 }
 
-.flex-1 {
-  flex: 1;
+.form-actions {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+}
+
+.habit-form-container {
+  max-width: 900px;
+  min-width: 320px;
 }
 
 .form-label {
@@ -172,6 +150,11 @@
 .form-textarea {
   resize: vertical;
   min-height: 80px;
+}
+
+.section-label {
+  display: block;
+  margin-bottom: 12px;
 }
 
 .frequency-tabs {
@@ -277,10 +260,9 @@
 }
 
 .color-picker {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  max-width: 180px;
 }
 
 .color-option {
@@ -360,8 +342,8 @@
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--border-color);
 }
 
@@ -464,4 +446,72 @@
 
 .habit-form-container {
   animation: formSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-columns {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.form-left,
+.form-right {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-right {
+  max-width: 400px;
+}
+
+.form-actions.form-actions-bottom {
+  width: 100%;
+  justify-content: flex-end;
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  background: var(--bg-secondary);
+  z-index: 2;
+  border-top: 1px solid var(--border-color);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 1100px) {
+  .form-columns {
+    flex-direction: column;
+    gap: 0;
+  }
+  .form-right {
+    max-width: none;
+  }
+  .form-actions.form-actions-bottom {
+    position: static;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .habit-form {
+    padding: 1.5rem;
+  }
+  .form-columns {
+    flex-direction: column;
+    gap: 0;
+  }
+  .form-actions.form-actions-bottom {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  .button-primary,
+  .button-secondary {
+    width: 100%;
+  }
 }
