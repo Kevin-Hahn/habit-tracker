@@ -1,19 +1,18 @@
-import { CommonModule } from "@angular/common";
-import { Component, computed, inject, output } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { PROGRESS_RING_CONFIG } from "../../constants/ui.constants";
-import { Habit, HabitEntry } from "../../models/habit.model";
-import { HabitService } from "../../services/habit.service";
-import { ThemeToggleComponent } from "../theme-toggle/theme-toggle.component";
-import { HabitCardComponent } from "./habit-card/habit-card.component";
-import { HabitQuickactionBarComponent } from "./habit-quickaction-bar/habit-quickaction-bar.component";
-import { HabitQuickstatsComponent } from "./habit-quickstats/habit-quickstats.component";
+import { CommonModule } from '@angular/common';
+import { Component, computed, inject, output } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { PROGRESS_RING_CONFIG } from '../../constants/PROGRESS_RING_CONFIG';
+import type { Habit } from '../../models/Habit';
+import type { HabitEntry } from '../../models/HabitEntry';
+import { HabitService } from '../../services/habit.service';
+import { HabitCardComponent } from '../habit-card/habit-card.component';
 
 @Component({
-  selector: "app-habit-dashboard",
-  imports: [CommonModule, RouterModule, HabitCardComponent, HabitQuickstatsComponent, HabitQuickactionBarComponent, ThemeToggleComponent],
-  templateUrl: "./habit-dashboard.component.html",
-  styleUrls: ["./habit-dashboard.component.css"],
+  selector: 'app-habit-dashboard',
+
+  imports: [CommonModule, RouterModule, HabitCardComponent],
+  templateUrl: './habit-dashboard.component.html',
+  styleUrls: ['./habit-dashboard.component.css'],
 })
 export class HabitDashboardComponent {
   private readonly habitService = inject(HabitService);

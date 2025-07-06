@@ -1,33 +1,36 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
-import { AppSettings, Habit, HabitEntry, WeeklyReflection } from "../models/habit.model";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { AppSettings } from '../models/AppSettings';
+import { Habit } from '../models/Habit';
+import { HabitEntry } from '../models/HabitEntry';
+import { WeeklyReflection } from '../models/WeeklyReflection';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class StorageService {
   private readonly STORAGE_KEYS = {
-    HABITS: "habit-tracker-habits",
-    ENTRIES: "habit-tracker-entries",
-    SETTINGS: "habit-tracker-settings",
-    REFLECTIONS: "habit-tracker-reflections",
+    HABITS: 'habit-tracker-habits',
+    ENTRIES: 'habit-tracker-entries',
+    SETTINGS: 'habit-tracker-settings',
+    REFLECTIONS: 'habit-tracker-reflections',
   };
 
   // Storage change notifications
   private storageChange$ = new BehaviorSubject<{ key: string; data: unknown }>({
-    key: "",
+    key: '',
     data: null,
   });
 
   constructor() {
     // Listen for storage changes across tabs
-    window.addEventListener("storage", (e) => {
-      if (e.key && e.key.startsWith("habit-tracker-") && e.newValue) {
+    window.addEventListener('storage', (e) => {
+      if (e.key && e.key.startsWith('habit-tracker-') && e.newValue) {
         try {
           const data = JSON.parse(e.newValue);
           this.storageChange$.next({ key: e.key, data });
         } catch (error) {
-          console.error("Error parsing storage data:", error);
+          console.error('Error parsing storage data:', error);
         }
       }
     });
@@ -40,7 +43,7 @@ export class StorageService {
       localStorage.setItem(key, serialized);
       this.storageChange$.next({ key, data });
     } catch (error) {
-      console.error("Error saving to localStorage:", error);
+      console.error('Error saving to localStorage:', error);
     }
   }
 
@@ -49,7 +52,7 @@ export class StorageService {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : null;
     } catch (error) {
-      console.error("Error reading from localStorage:", error);
+      console.error('Error reading from localStorage:', error);
       return null;
     }
   }
@@ -130,20 +133,20 @@ export class StorageService {
 
       return true;
     } catch (error) {
-      console.error("Error importing data:", error);
+      console.error('Error importing data:', error);
       return false;
     }
   }
 
   private getDefaultSettings(): AppSettings {
     return {
-      theme: "dark",
+      theme: 'dark',
       notifications: {
         enabled: true,
-        reminderTime: "09:00",
+        reminderTime: '09:00',
         soundEnabled: true,
       },
-      layout: "card",
+      layout: 'card',
       startOfWeek: 1, // Monday
     };
   }

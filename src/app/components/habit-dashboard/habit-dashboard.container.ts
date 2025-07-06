@@ -1,16 +1,19 @@
-import { CommonModule } from "@angular/common";
-import { Component, inject, signal } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { Habit } from "../../models/habit.model";
-import { HabitService } from "../../services/habit.service";
-import { StatisticsService } from "../../services/statistics.service";
-import { ThemeService } from "../../services/theme.service";
-import { QuestionDialogComponent } from "../question-dialog/question-dialog.component";
-import { HabitDashboardComponent } from "./habit-dashboard.component";
-import { HabitFormContainerComponent } from "./habit-form/habit-form.container";
+
+import { CommonModule } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { Habit } from '../../models/Habit';
+import { HabitEntry } from '../../models/HabitEntry';
+import { HabitService } from '../../services/habit.service';
+import { StatisticsService } from '../../services/statistics.service';
+import { ThemeService } from '../../services/theme.service';
+import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
+import { HabitDashboardComponent } from './habit-dashboard.component';
+import { HabitFormContainerComponent } from './habit-form/habit-form.container';
+
 
 @Component({
-  selector: "app-habit-dashboard-container",
+  selector: 'app-habit-dashboard-container',
 
   imports: [
     CommonModule,
@@ -30,25 +33,27 @@ import { HabitFormContainerComponent } from "./habit-form/habit-form.container";
 
     <!-- Habit Form Modal -->
     @if (showHabitForm()) {
-      <app-habit-form-container
-        (close)="closeHabitForm()"
-        (habitCreated)="closeHabitForm()"
-        (habitUpdated)="closeHabitForm()"
-        [editingHabit]="editingHabit()"
-      >
-      </app-habit-form-container>
+    <app-habit-form-container
+      [editingHabit]="editingHabit()"
+      (close)="closeHabitForm()"
+      (habitCreated)="closeHabitForm()"
+      (habitUpdated)="closeHabitForm()"
+    >
+    </app-habit-form-container>
     }
 
     <!-- Question Dialog for Delete -->
     @if (habitToDelete()) {
-      <app-question-dialog
-        [title]="'Delete Habit?'"
-        [text]="'Are you sure you want to delete this habit? This action cannot be undone.'"
-        [acceptLabel]="'Delete'"
-        [cancelLabel]="'Cancel'"
-        (accept)="onConfirmDeleteHabit()"
-        (cancel)="onCancelDeleteHabit()"
-      />
+    <app-question-dialog
+      [title]="'Delete Habit?'"
+      [text]="
+        'Are you sure you want to delete this habit? This action cannot be undone.'
+      "
+      [acceptLabel]="'Delete'"
+      [cancelLabel]="'Cancel'"
+      (accept)="onConfirmDeleteHabit()"
+      (cancel)="onCancelDeleteHabit()"
+    />
     }
   `,
 })
@@ -56,6 +61,7 @@ export class HabitDashboardContainerComponent {
   protected readonly habitService = inject(HabitService);
   protected readonly statisticsService = inject(StatisticsService);
   protected readonly themeService = inject(ThemeService);
+  private readonly router = inject(Router);
 
   todayDate = new Date();
 
@@ -63,6 +69,51 @@ export class HabitDashboardContainerComponent {
   showHabitForm = signal(false);
   editingHabit = signal<Habit | null>(null);
   habitToDelete = signal<string | null>(null);
+
+  // Computed values
+  completedToday = computed(
+    () =>
+      this.habitService
+        .todayEntries()
+        .filter((entry: HabitEntry) => entry.completed).length
+  );
+
+  totalHabitsToday = computed(() => this.habitService.activeHabits().length);
+
+  progressOffset = computed(() => {
+    const circumference = 2 * Math.PI * 26;
+    const total = this.totalHabitsToday();
+    const completed = this.completedToday();
+    const percentage = total > 0 ? completed / total : 0;
+    return circumference - percentage * circumference;
+  });
+
+  longestStreak = computed(() => {
+    const streaks = this.habitService
+      .activeHabits()
+      .map(
+        (habit: Habit) =>
+          this.habitService.getHabitStats(habit.id).longestStreak
+      );
+    return streaks.length > 0 ? Math.max(...streaks) : 0;
+  });
+
+  currentStreaks = computed(() => {
+    return this.habitService
+      .activeHabits()
+      .filter(
+        (habit: Habit) =>
+          this.habitService.getHabitStats(habit.id).currentStreak > 0
+      ).length;
+  });
+
+  weeklyCompletion = computed(() => {
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+    const weekStats = this.statisticsService.getWeekStats(startOfWeek);
+    return Math.round(weekStats.completionRate * 100);
+  });
 
   // Event handlers
   toggleHabit(habitId: string): void {
@@ -77,6 +128,10 @@ export class HabitDashboardContainerComponent {
   closeHabitForm(): void {
     this.showHabitForm.set(false);
     this.editingHabit.set(null);
+  }
+
+  openMoodTracker(): void {
+    this.router.navigate(['/mood']);
   }
 
   onRequestDeleteHabit(habitId: string): void {
@@ -98,4 +153,41 @@ export class HabitDashboardContainerComponent {
     this.habitToDelete.set(null);
   }
 
+  // Helper methods for child component
+  isHabitCompleted(habitId: string): boolean {
+    const today = new Date().toISOString().split('T')[0];
+    const entry = this.habitService
+      .todayEntries()
+      .find(
+        (entry: HabitEntry) => entry.habitId === habitId && entry.date === today
+      );
+    return entry?.completed || false;
+  }
+
+  getHabitStats(habitId: string) {
+    return this.habitService.getHabitStats(habitId);
+  }
+
+  getWeeklyProgress(habitId: string): number {
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+
+    let completedThisWeek = 0;
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      const dateStr = date.toISOString().split('T')[0];
+
+      const entry = this.habitService
+        .getEntriesForDate(dateStr)
+        .find((entry: HabitEntry) => entry.habitId === habitId);
+
+      if (entry?.completed) {
+        completedThisWeek++;
+      }
+    }
+
+    return completedThisWeek;
+  }
 }

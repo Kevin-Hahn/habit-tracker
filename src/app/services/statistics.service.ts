@@ -1,9 +1,32 @@
-import { Injectable } from "@angular/core";
-import { DayStats, HeatmapData, WeekStats } from "../models/stats.model";
-import { HabitService } from "./habit.service";
+import { Injectable } from '@angular/core';
+import { HabitService } from './habit.service';
+
+export interface DayStats {
+  date: string;
+  completedHabits: number;
+  totalHabits: number;
+  completionRate: number;
+  mood?: number;
+  energy?: number;
+}
+
+export interface WeekStats {
+  week: string;
+  completedHabits: number;
+  totalPossibleHabits: number;
+  completionRate: number;
+  averageMood?: number;
+  averageEnergy?: number;
+}
+
+export interface HeatmapData {
+  date: string;
+  value: number;
+  level: number; // 0-4 for intensity
+}
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class StatisticsService {
   constructor(private habitService: HabitService) { }
@@ -15,11 +38,11 @@ export class StatisticsService {
 
     const totalMood = dayEntries.reduce(
       (sum, entry) => sum + (entry.mood || 0),
-      0,
+      0
     );
     const totalEnergy = dayEntries.reduce(
       (sum, entry) => sum + (entry.energy || 0),
-      0,
+      0
     );
     const entriesWithMood = dayEntries.filter((entry) => entry.mood).length;
     const entriesWithEnergy = dayEntries.filter((entry) => entry.energy).length;
@@ -81,7 +104,7 @@ export class StatisticsService {
     const currentDate = new Date(startDate);
 
     while (currentDate <= endDate) {
-      const dateStr = currentDate.toISOString().split("T")[0];
+      const dateStr = currentDate.toISOString().split('T')[0];
       const dayStats = this.getDayStats(dateStr);
 
       // Calculate intensity level (0-4) based on completion rate
@@ -129,7 +152,7 @@ export class StatisticsService {
     for (let i = days - 1; i >= 0; i--) {
       const date = new Date(endDate);
       date.setDate(endDate.getDate() - i);
-      const dateStr = date.toISOString().split("T")[0];
+      const dateStr = date.toISOString().split('T')[0];
       const dayStats = this.getDayStats(dateStr);
 
       trend.push({
@@ -176,7 +199,7 @@ export class StatisticsService {
   } {
     const entries = this.habitService.entries();
     const validEntries = entries.filter(
-      (entry) => entry.mood && entry.energy && entry.completed !== undefined,
+      (entry) => entry.mood && entry.energy && entry.completed !== undefined
     );
 
     if (validEntries.length < 2) {
@@ -186,17 +209,17 @@ export class StatisticsService {
     // Calculate correlations (simplified Pearson correlation)
     const moodVsCompletion = this.calculateCorrelation(
       validEntries.map((e) => e.mood!),
-      validEntries.map((e) => (e.completed ? 1 : 0)),
+      validEntries.map((e) => (e.completed ? 1 : 0))
     );
 
     const energyVsCompletion = this.calculateCorrelation(
       validEntries.map((e) => e.energy!),
-      validEntries.map((e) => (e.completed ? 1 : 0)),
+      validEntries.map((e) => (e.completed ? 1 : 0))
     );
 
     const moodVsEnergy = this.calculateCorrelation(
       validEntries.map((e) => e.mood!),
-      validEntries.map((e) => e.energy!),
+      validEntries.map((e) => e.energy!)
     );
 
     return { moodVsCompletion, energyVsCompletion, moodVsEnergy };
@@ -219,15 +242,15 @@ export class StatisticsService {
 
       if (recentTrend > earlierTrend + 0.1) {
         insights.push(
-          "🚀 You're on an upward trend! Your consistency has improved recently.",
+          "🚀 You're on an upward trend! Your consistency has improved recently."
         );
       } else if (recentTrend < earlierTrend - 0.1) {
         insights.push(
-          "📉 Your completion rate has dipped recently. Consider adjusting your routine.",
+          '📉 Your completion rate has dipped recently. Consider adjusting your routine.'
         );
       } else {
         insights.push(
-          "📊 Your habit completion has been steady. Consistency is key to success!",
+          '📊 Your habit completion has been steady. Consistency is key to success!'
         );
       }
     }
@@ -236,34 +259,36 @@ export class StatisticsService {
     const activeStreaks = streaks.filter((s) => s.currentStreak > 0);
     if (activeStreaks.length > 0) {
       const longestActive = activeStreaks.reduce((max, current) =>
-        current.currentStreak > max.currentStreak ? current : max,
+        current.currentStreak > max.currentStreak ? current : max
       );
       insights.push(
-        `🔥 Great job maintaining your ${longestActive.habitName} streak for ${longestActive.currentStreak} days!`,
+        `🔥 Great job maintaining your ${longestActive.habitName} streak for ${longestActive.currentStreak} days!`
       );
     } else if (habits.length > 0) {
       insights.push(
-        "🎯 Start building streaks by completing habits consistently. Even one day makes a difference!",
+        '🎯 Start building streaks by completing habits consistently. Even one day makes a difference!'
       );
     }
 
     // Category performance insights
     if (categoryStats.length > 0) {
       const bestCategory = categoryStats.reduce((best, current) =>
-        current.completionRate > best.completionRate ? current : best,
+        current.completionRate > best.completionRate ? current : best
       );
       if (bestCategory.completionRate > 0.7) {
         insights.push(
-          `⭐ You're excelling in ${bestCategory.category} habits with ${(bestCategory.completionRate * 100).toFixed(0)}% completion rate!`,
+          `⭐ You're excelling in ${bestCategory.category} habits with ${(
+            bestCategory.completionRate * 100
+          ).toFixed(0)}% completion rate!`
         );
       }
 
       const needsWork = categoryStats.find(
-        (cat) => cat.completionRate < 0.3 && cat.totalHabits > 0,
+        (cat) => cat.completionRate < 0.3 && cat.totalHabits > 0
       );
       if (needsWork) {
         insights.push(
-          `💪 Consider focusing more on your ${needsWork.category} habits to improve overall balance.`,
+          `💪 Consider focusing more on your ${needsWork.category} habits to improve overall balance.`
         );
       }
     }
@@ -271,37 +296,37 @@ export class StatisticsService {
     // Mood correlation insights
     if (correlation.moodVsCompletion > 0.3) {
       insights.push(
-        "😊 Your mood seems to improve when you complete more habits. Keep it up!",
+        '😊 Your mood seems to improve when you complete more habits. Keep it up!'
       );
     }
 
     if (correlation.energyVsCompletion > 0.3) {
       insights.push(
-        "⚡ Higher energy levels correlate with better habit completion.",
+        '⚡ Higher energy levels correlate with better habit completion.'
       );
     }
 
     // General motivational insights if no specific insights
     if (insights.length === 0) {
       const motivationalInsights = [
-        "🌱 Every small step counts towards building lasting habits.",
-        "🎨 Customize your habits to match your lifestyle and goals.",
-        "📈 Track your progress regularly to stay motivated and accountable.",
-        "🌟 Celebrate small wins - they add up to big changes over time.",
-        "🔄 Consistency beats perfection. Focus on showing up daily.",
-        "🎯 Set realistic goals and gradually increase difficulty as you improve.",
+        '🌱 Every small step counts towards building lasting habits.',
+        '🎨 Customize your habits to match your lifestyle and goals.',
+        '📈 Track your progress regularly to stay motivated and accountable.',
+        '🌟 Celebrate small wins - they add up to big changes over time.',
+        '🔄 Consistency beats perfection. Focus on showing up daily.',
+        '🎯 Set realistic goals and gradually increase difficulty as you improve.',
       ];
       insights.push(
         motivationalInsights[
         Math.floor(Math.random() * motivationalInsights.length)
-        ],
+        ]
       );
     }
 
     // Ensure we always have at least 2-3 insights
     if (insights.length === 1) {
       insights.push(
-        "🏆 Remember: building habits is a marathon, not a sprint. Stay consistent!",
+        '🏆 Remember: building habits is a marathon, not a sprint. Stay consistent!'
       );
     }
 
@@ -314,7 +339,7 @@ export class StatisticsService {
     const currentDate = new Date(startDate);
 
     for (let i = 0; i < 7; i++) {
-      dates.push(currentDate.toISOString().split("T")[0]);
+      dates.push(currentDate.toISOString().split('T')[0]);
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
@@ -327,9 +352,9 @@ export class StatisticsService {
     const pastDaysOfYear =
       (startDate.getTime() - firstDayOfYear.getTime()) / 86400000;
     const weekNumber = Math.ceil(
-      (pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7,
+      (pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7
     );
-    return `${year}-W${weekNumber.toString().padStart(2, "0")}`;
+    return `${year}-W${weekNumber.toString().padStart(2, '0')}`;
   }
 
   private calculateCorrelation(x: number[], y: number[]): number {
@@ -344,7 +369,7 @@ export class StatisticsService {
 
     const numerator = n * sumXY - sumX * sumY;
     const denominator = Math.sqrt(
-      (n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY),
+      (n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY)
     );
 
     return denominator === 0 ? 0 : numerator / denominator;

@@ -1,16 +1,18 @@
-import { Injectable } from "@angular/core";
-import { HabitService } from "./habit.service";
-import { StorageService } from "./storage.service";
-import { Habit, HabitEntry } from "../models/habit.model";
-import { HABIT_CATEGORIES, HABIT_COLORS } from "../constants/habit.constants";
+import { Injectable } from '@angular/core';
+import { HABIT_CATEGORIES } from '../constants/HABIT_CATEGORIES';
+import { HABIT_COLORS } from '../constants/HABIT_COLORS';
+import { Habit } from '../models/Habit';
+import { HabitEntry } from '../models/HabitEntry';
+import { HabitService } from './habit.service';
+import { StorageService } from './storage.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class SampleDataService {
   constructor(
     private habitService: HabitService,
-    private storageService: StorageService,
+    private storageService: StorageService
   ) {}
 
   initializeSampleData(): void {
@@ -20,77 +22,77 @@ export class SampleDataService {
       return;
     }
 
-    console.log("Initializing sample data...");
+    console.log('Initializing sample data...');
 
     // Create sample habits
     const sampleHabits = [
       {
-        name: "Morning Exercise",
-        description: "30 minutes of physical activity to start the day",
-        frequency: { type: "daily" as const },
+        name: 'Morning Exercise',
+        description: '30 minutes of physical activity to start the day',
+        frequency: { type: 'daily' as const },
         category: HABIT_CATEGORIES[0], // 'Health'
         color: HABIT_COLORS[0], // '#059669'
-        tags: ["health", "fitness", "morning"],
+        tags: ['health', 'fitness', 'morning'],
         targetCount: 1,
         isActive: true,
       },
       {
-        name: "Read for 30 min",
-        description: "Daily reading habit for personal growth",
-        frequency: { type: "daily" as const },
+        name: 'Read for 30 min',
+        description: 'Daily reading habit for personal growth',
+        frequency: { type: 'daily' as const },
         category: HABIT_CATEGORIES[1], // 'Learning'
         color: HABIT_COLORS[1], // '#16a34a'
-        tags: ["learning", "books", "growth"],
+        tags: ['learning', 'books', 'growth'],
         targetCount: 1,
         isActive: true,
       },
       {
-        name: "Drink Water",
-        description: "Stay hydrated throughout the day",
-        frequency: { type: "daily" as const },
+        name: 'Drink Water',
+        description: 'Stay hydrated throughout the day',
+        frequency: { type: 'daily' as const },
         category: HABIT_CATEGORIES[0], // 'Health'
         color: HABIT_COLORS[12], // '#0891b2'
-        tags: ["health", "hydration"],
+        tags: ['health', 'hydration'],
         targetCount: 8,
         isActive: true,
       },
       {
-        name: "Journal",
-        description: "Reflect and write down thoughts",
-        frequency: { type: "daily" as const },
+        name: 'Journal',
+        description: 'Reflect and write down thoughts',
+        frequency: { type: 'daily' as const },
         category: HABIT_CATEGORIES[2], // 'Personal'
         color: HABIT_COLORS[6], // '#ca8a04'
-        tags: ["reflection", "writing", "mindfulness"],
+        tags: ['reflection', 'writing', 'mindfulness'],
         targetCount: 1,
         isActive: true,
       },
       {
-        name: "Meditation",
-        description: "10-15 minutes of mindfulness practice",
-        frequency: { type: "daily" as const },
+        name: 'Meditation',
+        description: '10-15 minutes of mindfulness practice',
+        frequency: { type: 'daily' as const },
         category: HABIT_CATEGORIES[6], // 'Spiritual'
         color: HABIT_COLORS[7], // '#d97706'
-        tags: ["mindfulness", "mental-health", "peace"],
+        tags: ['mindfulness', 'mental-health', 'peace'],
         targetCount: 1,
         isActive: true,
       },
       {
-        name: "Practice Coding",
-        description: "Work on programming skills and projects",
-        frequency: { type: "weekly" as const, timesPerWeek: 5 },
+        name: 'Practice Coding',
+        description: 'Work on programming skills and projects',
+        frequency: { type: 'weekly' as const, timesPerWeek: 5 },
         category: HABIT_CATEGORIES[1], // 'Learning'
         color: HABIT_COLORS[2], // '#22c55e'
-        tags: ["coding", "skills", "career"],
+        tags: ['coding', 'skills', 'career'],
         targetCount: 1,
         isActive: true,
       },
       {
-        name: "Call Family",
-        description: "Stay connected with family members",
-        frequency: { type: "weekly" as const, timesPerWeek: 2 },
+        name: 'Call Family',
+        description: 'Stay connected with family members',
+        frequency: { type: 'weekly' as const, timesPerWeek: 2 },
         category: HABIT_CATEGORIES[4], // 'Social'
         color: HABIT_COLORS[8], // '#ea580c'
-        tags: ["family", "relationships", "connection"],
+        tags: ['family', 'relationships', 'connection'],
         targetCount: 1,
         isActive: true,
       },
@@ -106,7 +108,7 @@ export class SampleDataService {
     // Create sample entries for the last 30 days to show some history
     this.createSampleEntries(createdHabits);
 
-    console.log("Sample data initialized successfully!");
+    console.log('Sample data initialized successfully!');
   }
 
   private createSampleEntries(habits: Habit[]): void {
@@ -117,7 +119,7 @@ export class SampleDataService {
     for (let i = 0; i < 30; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
-      const dateStr = date.toISOString().split("T")[0];
+      const dateStr = date.toISOString().split('T')[0];
 
       habits.forEach((habit) => {
         // Create entries with varying completion rates to make it realistic
@@ -134,7 +136,7 @@ export class SampleDataService {
             energy: this.getRandomEnergy(),
             notes: this.getRandomNote(habit.name),
             completedAt: new Date(
-              date.getTime() + Math.random() * 24 * 60 * 60 * 1000,
+              date.getTime() + Math.random() * 24 * 60 * 60 * 1000
             ), // Random time during the day
           };
           entries.push(entry);
@@ -152,19 +154,19 @@ export class SampleDataService {
 
     // Adjust based on category
     switch (habit.category) {
-      case "Health":
+      case 'Health':
         baseProbability = 0.8; // Health habits tend to be more consistent
         break;
-      case "Learning":
+      case 'Learning':
         baseProbability = 0.65;
         break;
-      case "Personal":
+      case 'Personal':
         baseProbability = 0.75;
         break;
-      case "Social":
+      case 'Social':
         baseProbability = 0.6;
         break;
-      case "Spiritual":
+      case 'Spiritual':
         baseProbability = 0.7;
         break;
     }
@@ -175,7 +177,7 @@ export class SampleDataService {
     // Add some weekly patterns (slightly lower on weekends for work-related habits)
     const dayOfWeek = (new Date().getDay() - daysAgo) % 7;
     const weekendFactor =
-      (dayOfWeek === 0 || dayOfWeek === 6) && habit.category === "Learning"
+      (dayOfWeek === 0 || dayOfWeek === 6) && habit.category === 'Learning'
         ? 0.8
         : 1;
 
@@ -207,16 +209,16 @@ export class SampleDataService {
     if (Math.random() > 0.3) return undefined;
 
     const notes = [
-      "Felt great today!",
-      "Struggled a bit but pushed through",
-      "Really enjoying this habit",
-      "Quick session but effective",
-      "Best session this week",
-      "Feeling motivated",
-      "Challenging but rewarding",
-      "Making good progress",
-      "Felt energized after",
-      "Short but sweet",
+      'Felt great today!',
+      'Struggled a bit but pushed through',
+      'Really enjoying this habit',
+      'Quick session but effective',
+      'Best session this week',
+      'Feeling motivated',
+      'Challenging but rewarding',
+      'Making good progress',
+      'Felt energized after',
+      'Short but sweet',
     ];
 
     return notes[Math.floor(Math.random() * notes.length)];

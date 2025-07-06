@@ -1,7 +1,11 @@
-import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { CHART_LEVELS } from "../../constants/ui.constants";
+import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { CHART_LEVELS } from '../../constants/CHART_LEVELS';
+import { HabitStatsChartsComponent } from './components/habit-stats-charts/habit-stats-charts.component';
+import { HabitStatsHeatmapComponent } from './components/habit-stats-heatmap/habit-stats-heatmap.component';
+import { HabitStatsOverviewComponent } from './components/habit-stats-overview/habit-stats-overview.component';
+import { HabitStatsStreaksComponent } from './components/habit-stats-streaks/habit-stats-streaks.component';
 
 interface TrendData {
   date: string;
@@ -28,11 +32,17 @@ interface HeatmapWeek {
 }
 
 @Component({
-  selector: "app-habit-stats",
-
-  imports: [CommonModule, RouterModule],
-  templateUrl: "./habit-stats.component.html",
-  styleUrls: ["./habit-stats.component.css"],
+  selector: 'app-habit-stats',
+  imports: [
+    CommonModule,
+    RouterModule,
+    HabitStatsOverviewComponent,
+    HabitStatsChartsComponent,
+    HabitStatsStreaksComponent,
+    HabitStatsHeatmapComponent,
+  ],
+  templateUrl: './habit-stats.component.html',
+  styleUrls: ['./habit-stats.component.css'],
 })
 export class HabitStatsComponent {
   @Input() totalHabits!: number;

@@ -1,23 +1,24 @@
-import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { RouterModule } from "@angular/router";
-import { ENERGY_LEVELS, MOOD_OPTIONS } from "../../constants/habit.constants";
-import { WeeklyReflection } from "../../models/habit.model";
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { ENERGY_LEVELS } from '../../constants/ENERGY_LEVELS';
+import { MOOD_OPTIONS } from '../../constants/MOOD_OPTIONS';
+import { WeeklyReflection } from '../../models/WeeklyReflection';
 
 @Component({
-  selector: "app-reflection",
+  selector: 'app-reflection',
 
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: "./reflection.component.html",
-  styleUrls: ["./reflection.component.css"],
+  templateUrl: './reflection.component.html',
+  styleUrls: ['./reflection.component.css'],
 })
 export class ReflectionComponent {
   @Input() currentReflection!: Partial<WeeklyReflection>;
   @Input() reflectionText!: string;
   @Input() pastReflections!: WeeklyReflection[];
   @Input() currentWeekRange!: string;
-  @Input() saveStatus!: "idle" | "saving" | "saved" | "error";
+  @Input() saveStatus!: 'idle' | 'saving' | 'saved' | 'error';
   @Input() isFormValid!: boolean;
 
   @Output() updateReflection = new EventEmitter<{
@@ -43,7 +44,7 @@ export class ReflectionComponent {
 
     if (win) {
       this.addWin.emit(win);
-      input.value = "";
+      input.value = '';
     }
   }
 
@@ -51,7 +52,7 @@ export class ReflectionComponent {
     const win = input.value.trim();
     if (win) {
       this.addWin.emit(win);
-      input.value = "";
+      input.value = '';
     }
   }
 
@@ -62,7 +63,7 @@ export class ReflectionComponent {
 
     if (challenge) {
       this.addChallenge.emit(challenge);
-      input.value = "";
+      input.value = '';
     }
   }
 
@@ -70,7 +71,7 @@ export class ReflectionComponent {
     const challenge = input.value.trim();
     if (challenge) {
       this.addChallenge.emit(challenge);
-      input.value = "";
+      input.value = '';
     }
   }
 
@@ -81,7 +82,7 @@ export class ReflectionComponent {
 
     if (goal) {
       this.addGoal.emit(goal);
-      input.value = "";
+      input.value = '';
     }
   }
 
@@ -89,17 +90,17 @@ export class ReflectionComponent {
     const goal = input.value.trim();
     if (goal) {
       this.addGoal.emit(goal);
-      input.value = "";
+      input.value = '';
     }
   }
 
   getMoodEmoji(mood: number): string {
     const moodData = this.moods.find((m) => m.value === mood);
-    return moodData?.emoji || "😐";
+    return moodData?.emoji || '😐';
   }
 
   getEnergyIcon(energy: number): string {
     const energyData = this.energyLevels.find((e) => e.value === energy);
-    return energyData?.icon || "🔋";
+    return energyData?.icon || '🔋';
   }
 }
